@@ -3,23 +3,19 @@ from uuid import UUID
 from datetime import date
 from typing import Optional, List, Any
 
-class ProductReq(BaseModel):
+
+class CategoryReq(BaseModel):
+    
     id: Optional[UUID]
     name: str
-    description: str
-    cost: float
-    categories: List
+    
     
     @validator('id', pre=True, allow_reuse=True, check_fields=False)
-    def product_object_to_uuid(cls, values):
+    def category_object_to_uuid(cls, values):
         if isinstance(values, UUID):
             return values
         else:
             return values.id.id
         
-    @validator('categories', pre=True, allow_reuse=True, check_fields=False)
-    def categories_set_to_list(cls, values):
-        return [v.to_dict() for v in values]
-    
     class Config:
         orm_mode = True
