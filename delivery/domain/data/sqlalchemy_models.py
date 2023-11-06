@@ -1,8 +1,8 @@
 from datetime import date
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column, Optional, List
+from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from uuid import UUID
-
+from typing import List, Optional
 
 class Base(DeclarativeBase):
     pass
@@ -11,23 +11,25 @@ class Base(DeclarativeBase):
 class AssociationProductCategory(Base):
     __tablename__ = 'association_product_catergory'
 
-    id: UUID = mapped_column(primary_key=True, unique=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
-    product_id: UUID = mapped_column(
-        ForeignKey('product.uuid'), primary_key=True)
-    category_id: UUID = mapped_column(
-        ForeignKey('category.uuid'), primary_key=True)
+    product_id: Mapped[UUID] = mapped_column(
+        ForeignKey('product.id'))
+    category_id: Mapped[UUID] = mapped_column(
+        ForeignKey('category.id'))
 
     category: Mapped['Category'] = relationship(back_populates="products")
     product: Mapped['Product'] = relationship(back_populates="categories")
 
 
 class AssociationProductOrder(Base):
-    id: UUID = mapped_column(primary_key=True, unique=True)
+    __tablename__ = 'association_product_order'
+    
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
-    products: UUID = mapped_column(ForeignKey('product.uuid'))
-    products_bonus: UUID = mapped_column(ForeignKey('product.uuid'))
-    orders: UUID = mapped_column(ForeignKey('order.uuid'))
+    product_id: Mapped[UUID] = mapped_column(ForeignKey('product.id'))
+    product_bonus_id: Mapped[UUID] = mapped_column(ForeignKey('product.id'))
+    order_id: Mapped[UUID] = mapped_column(ForeignKey('order.id'))
 
     product: Mapped['Product'] = relationship(back_populates="products")
     product_bonus: Mapped['Product'] = relationship(
@@ -38,13 +40,13 @@ class AssociationProductOrder(Base):
 class Product(Base):
     __tablename__ = 'product'
 
-    id: UUID = mapped_column(primary_key=True, unique=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
     name: Mapped[str]
     description: Mapped[Optional[str]]
     cost: Mapped[int]
 
-    categories = relationship("Category", back_populates="products",
+    categories: Mapped[List['Category']] = relationship("Category", back_populates="products",
                               cascade="all, delete", secondary=AssociationProductCategory)
 
     orders = relationship("Order", back_populates="order",
@@ -54,7 +56,7 @@ class Product(Base):
 class Category(Base):
     __tablename__ = 'category'
 
-    id: UUID = mapped_column(primary_key=True, unique=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
     name: Mapped[str]
 
     products = relationship("Product", back_populates="categories",
@@ -64,7 +66,7 @@ class Category(Base):
 class Address(Base):
     __tablename__ = 'address'
 
-    id: UUID = mapped_column(primary_key=True, unique=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
     street = Mapped[str]
     city = Mapped[str]
@@ -73,7 +75,7 @@ class Address(Base):
     complement = Mapped[Optional[str]]
     reference_point = Mapped[Optional[str]]
 
-    user_id: UUID = mapped_column(ForeignKey('user.uuid'))
+    user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
 
     user: Mapped["User"] = relationship(back_populates="addresses",)
 
@@ -81,7 +83,7 @@ class Address(Base):
 class Ticket(Base):
     __tablename__ = 'ticket'
 
-    id: UUID = mapped_column(primary_key=True, unique=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
     deadline: Mapped[date]
     code: Mapped[str] = mapped_column(unique=True)
@@ -92,7 +94,7 @@ class Ticket(Base):
 class User(Base):
     __tablename__ = 'user'
 
-    id: UUID = mapped_column(primary_key=True, unique=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
     name: Mapped[str]
     birthdate: Mapped[date]
@@ -104,42 +106,41 @@ class User(Base):
     instagram: Mapped[Optional[str]] = mapped_column(unique=True)
     role: Mapped[str]
 
-    addresses = Mapped[List['Address']] = relationship(back_populates='user')
-    orders = Mapped[List['Order']] = relationship(back_populates='user')
-    orders_store = Mapped[List['Order']] = relationship(back_populates='store')
+    addresses: Mapped[List['Address']] = relationship(back_populates='user')
+    orders: Mapped[List['Order']] = relationship(back_populates='user')
+    orders_store: Mapped[List['Order']] = relationship(back_populates='store')
     ratings: Mapped[List['Rating']] = relationship(back_populates='store')
 
 class Rating(Base):
     __tablename__ = 'rating'
-
     
-    id: UUID
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
     rating: Mapped[int]
     description: Mapped[Optional[str]]
     
-    store: Mapped['User'] = mapped_column(back_populates='ratings')
+    store: Mapped['User'] = relationship('User',back_populates='ratings')
     
-    user_id: UUID = mapped_column(ForeignKey('user.uuid'))
-    order_id: UUID = mapped_column(ForeignKey('user.uuid'))
+    user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
+    order_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
 
 
 class Order(Base):
     __tablename__ = 'order'
 
-    id: UUID = mapped_column(primary_key=True, unique=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
     total: Mapped[float]
     observation: Mapped[Optional[str]]
     payment_method: Mapped[str]
 
-    address_id: UUID = mapped_column(ForeignKey('address.uuid'))
-    store_id: UUID = mapped_column(ForeignKey('user.uuid'))
-    user_id: UUID = mapped_column(ForeignKey('user.uuid'))
+    address_id: Mapped[UUID] = mapped_column(ForeignKey('address.id'))
+    store_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
+    user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
 
-    store: Mapped['User'] = mapped_column(back_populates='orders_store')
-    user: Mapped['User'] = mapped_column(back_populates='orders')
+    store: Mapped['User'] = relationship('User',back_populates='orders_store')
+    user: Mapped['User'] = relationship('User',back_populates='orders')
 
-    products_bonus = relationship(
+    products_bonus: Mapped[List['Product']] = relationship(
         'Product', back_populates='products_bonus', cascade="all, delete", secondary=AssociationProductOrder)
-    products = relationship('Product', back_populates="product",
+    products: Mapped[List['Product']] = relationship('Product', back_populates="product",
                             cascade="all, delete", secondary=AssociationProductOrder)

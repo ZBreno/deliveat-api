@@ -2,7 +2,7 @@ from pydantic import BaseModel, validator
 from uuid import UUID
 from datetime import date
 from typing import Optional, List, Any
-    
+from .product import ProductReq
     
 class OrderReq(BaseModel):
     id: Optional[UUID]
@@ -11,8 +11,8 @@ class OrderReq(BaseModel):
     address_id: UUID
     store_id: UUID
     user_id: UUID
-    products: List
-    products_bonus: List
+    products: List[ProductReq]
+    products_bonus: List[ProductReq]
     
     
     @validator('id', pre=True, allow_reuse=True, check_fields=False)

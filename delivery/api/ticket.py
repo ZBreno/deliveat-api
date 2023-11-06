@@ -4,7 +4,6 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
 from domain.request.ticket import TicketReq
-from domain.data.sqlalchemy_models import Ticket
 from repository.sqlalchemy.ticket import TicketRepository
 from uuid import UUID, uuid4
 

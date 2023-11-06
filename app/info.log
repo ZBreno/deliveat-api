@@ -46,3 +46,15 @@ Log: [6b481b7b-736f-4f89-981f-6f67c891cc57: 2023-11-05T21:09:28.355144-0300 - IN
 Log: [6b481b7b-736f-4f89-981f-6f67c891cc57: 2023-11-05T21:09:28.357143-0300 - INFO - Successfully accessed /deliveat/1 
 Log: [4172840f-7c0c-4ac5-ba79-b32eca114c88: 2023-11-05T21:09:32.624249-0300 - INFO - Request to access /deliveat/2 
 Log: [4172840f-7c0c-4ac5-ba79-b32eca114c88: 2023-11-05T21:09:32.626248-0300 - INFO - Successfully accessed /deliveat/2 
+Log: [e029491d-2ec6-4e9d-8a8c-8f3764e672a1: 2023-11-05T21:32:48.811738-0300 - INFO - Request to access / 
+Log: [e029491d-2ec6-4e9d-8a8c-8f3764e672a1: 2023-11-05T21:32:48.811738-0300 - INFO - Successfully accessed / 
+Log: [980cb7ac-e3ac-43be-a956-5763582ea67c: 2023-11-05T21:32:52.647048-0300 - INFO - Request to access /docs 
+Log: [980cb7ac-e3ac-43be-a956-5763582ea67c: 2023-11-05T21:32:52.647048-0300 - INFO - Successfully accessed /docs 
+Log: [e632a0ce-5ae6-4fb8-a607-9f9b25cf735a: 2023-11-05T21:32:52.755314-0300 - INFO - Request to access /openapi.json 
+Log: [e632a0ce-5ae6-4fb8-a607-9f9b25cf735a: 2023-11-05T21:32:52.756311-0300 - INFO - Successfully accessed /openapi.json 
+Log: [b579969d-5714-47a1-aa9d-5a51db24dce5: 2023-11-05T21:33:16.343861-0300 - INFO - Request to access /docs 
+Log: [b579969d-5714-47a1-aa9d-5a51db24dce5: 2023-11-05T21:33:16.343861-0300 - INFO - Successfully accessed /docs 
+Log: [90fbca91-0dbd-448f-a95e-1640bba7f96b: 2023-11-05T21:33:16.427509-0300 - INFO - Request to access /openapi.json 
+Log: [90fbca91-0dbd-448f-a95e-1640bba7f96b: 2023-11-05T21:33:16.427509-0300 - INFO - Successfully accessed /openapi.json 
+Log: [9a26ad81-fdec-4a75-b9b9-835803f3e5b6: 2023-11-05T21:33:21.662904-0300 - INFO - Request to access /deliveat/1 
+Log: [9a26ad81-fdec-4a75-b9b9-835803f3e5b6: 2023-11-05T21:33:21.663904-0300 - INFO - Successfully accessed /deliveat/1 
