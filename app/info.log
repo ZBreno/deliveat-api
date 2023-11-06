@@ -58,3 +58,17 @@ Log: [90fbca91-0dbd-448f-a95e-1640bba7f96b: 2023-11-05T21:33:16.427509-0300 - IN
 Log: [90fbca91-0dbd-448f-a95e-1640bba7f96b: 2023-11-05T21:33:16.427509-0300 - INFO - Successfully accessed /openapi.json 
 Log: [9a26ad81-fdec-4a75-b9b9-835803f3e5b6: 2023-11-05T21:33:21.662904-0300 - INFO - Request to access /deliveat/1 
 Log: [9a26ad81-fdec-4a75-b9b9-835803f3e5b6: 2023-11-05T21:33:21.663904-0300 - INFO - Successfully accessed /deliveat/1 
+Log: [9bc8d49d-3c42-40f5-a6f8-fd0bfd316da3: 2023-11-05T23:12:15.388538-0300 - INFO - Request to access / 
+Log: [9bc8d49d-3c42-40f5-a6f8-fd0bfd316da3: 2023-11-05T23:12:15.389537-0300 - INFO - Successfully accessed / 
+Log: [f9d56c56-a45e-4381-b043-a9635f38f635: 2023-11-05T23:12:23.331125-0300 - INFO - Request to access /docs 
+Log: [f9d56c56-a45e-4381-b043-a9635f38f635: 2023-11-05T23:12:23.332125-0300 - INFO - Successfully accessed /docs 
+Log: [363a2915-f615-4c5f-8137-860b811a5549: 2023-11-05T23:12:23.410390-0300 - INFO - Request to access /openapi.json 
+Log: [363a2915-f615-4c5f-8137-860b811a5549: 2023-11-05T23:12:23.411390-0300 - INFO - Successfully accessed /openapi.json 
+Log: [fbd409db-c8e1-4b2e-8dcd-d89cb49ed5bc: 2023-11-05T23:12:28.717175-0300 - INFO - Request to access /deliveat/1 
+Log: [fbd409db-c8e1-4b2e-8dcd-d89cb49ed5bc: 2023-11-05T23:12:28.719175-0300 - INFO - Successfully accessed /deliveat/1 
+Log: [9f027ac0-5ccb-46d6-b314-9271ae508f07: 2023-11-05T23:12:45.581326-0300 - INFO - Request to access /docs 
+Log: [9f027ac0-5ccb-46d6-b314-9271ae508f07: 2023-11-05T23:12:45.582327-0300 - INFO - Successfully accessed /docs 
+Log: [3be4a6da-e9ec-4856-b93a-6fe927cc2397: 2023-11-05T23:12:45.659832-0300 - INFO - Request to access /openapi.json 
+Log: [3be4a6da-e9ec-4856-b93a-6fe927cc2397: 2023-11-05T23:12:45.659832-0300 - INFO - Successfully accessed /openapi.json 
+Log: [36881f6b-5af4-474b-8083-5886872eb8ca: 2023-11-05T23:12:57.488905-0300 - INFO - Request to access /deliveat/1 
+Log: [36881f6b-5af4-474b-8083-5886872eb8ca: 2023-11-05T23:12:57.489905-0300 - INFO - Successfully accessed /deliveat/1 

@@ -1,6 +1,6 @@
 from datetime import date
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column, backref
 from uuid import UUID
 from typing import List, Optional
 
@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
 
 
 class AssociationProductCategory(Base):
-    __tablename__ = 'association_product_catergory'
+    __tablename__ = 'association_product_category'
 
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
@@ -18,8 +18,8 @@ class AssociationProductCategory(Base):
     category_id: Mapped[UUID] = mapped_column(
         ForeignKey('category.id'))
 
-    category: Mapped['Category'] = relationship(back_populates="products")
-    product: Mapped['Product'] = relationship(back_populates="categories")
+    category = relationship('Category', back_populates='products')
+    product = relationship('Product', back_populates='categories')
 
 
 class AssociationProductOrder(Base):
