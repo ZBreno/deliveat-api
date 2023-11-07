@@ -18,8 +18,8 @@ class AssociationProductCategory(Base):
     category_id: Mapped[UUID] = mapped_column(
         ForeignKey('category.id'))
 
-    category = relationship('Category', back_populates='products')
-    product = relationship('Product', back_populates='categories')
+    category: Mapped['Category'] = relationship('Category', back_populates='product')
+    product: Mapped['Product'] = relationship('Product', back_populates='category')
 
 
 class AssociationProductOrder(Base):
@@ -46,7 +46,7 @@ class Product(Base):
     description: Mapped[Optional[str]]
     cost: Mapped[int]
 
-    categories: Mapped[List['Category']] = relationship("Category", back_populates="products",
+    category: Mapped[List["AssociationProductCategory"]] = relationship("Category", back_populates="product",
                               cascade="all, delete", secondary=AssociationProductCategory)
 
     orders = relationship("Order", back_populates="order",
@@ -59,7 +59,7 @@ class Category(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
     name: Mapped[str]
 
-    products = relationship("Product", back_populates="categories",
+    product: Mapped[List["AssociationProductCategory"]] = relationship("Product", back_populates="category",
                             cascade="all, delete", secondary=AssociationProductCategory)
 
 

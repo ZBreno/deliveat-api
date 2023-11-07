@@ -10,13 +10,11 @@ class TicketRepository:
         self.sess:Session = sess
     
     def insert_ticket(self, ticket: Ticket) -> bool: 
-        try:
-            object_mapper = Ticket(**ticket)
-            self.sess.add(object_mapper)
-            self.sess.commit()
-        except: 
-            return False 
-        return True
+      
+        object_mapper = Ticket(**ticket)
+        self.sess.add(object_mapper)
+        self.sess.commit()
+      
     
     def update_ticket(self, id:UUID, details:Dict[str, Any]) -> bool: 
        try:
