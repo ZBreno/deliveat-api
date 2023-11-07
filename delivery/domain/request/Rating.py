@@ -12,12 +12,12 @@ class RatingReq(BaseModel):
     order_id: UUID
     
     
-    @validator('id', pre=True, allow_reuse=True, check_fields=False)
-    def rating_object_to_uuid(cls, values):
-        if isinstance(values, UUID):
-            return values
-        else:
-            return values.id.id
+    # @validator('id', pre=True, allow_reuse=True, check_fields=False)
+    # def rating_object_to_uuid(cls, values):
+    #     if isinstance(values, UUID):
+    #         return values
+    #     else:
+    #         return values.id.id
         
     @validator('user_id', pre=True, allow_reuse=True, check_fields=False)
     def user_object_to_uuid(cls, values):

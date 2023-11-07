@@ -15,12 +15,12 @@ class OrderReq(BaseModel):
     products_bonus: List[ProductReq]
     
     
-    @validator('id', pre=True, allow_reuse=True, check_fields=False)
-    def order_object_to_uuid(cls, values):
-        if isinstance(values, UUID):
-            return values
-        else:
-            return values.id.id
+    # @validator('id', pre=True, allow_reuse=True, check_fields=False)
+    # def order_object_to_uuid(cls, values):
+    #     if isinstance(values, UUID):
+    #         return values
+    #     else:
+    #         return values.id.id
         
     @validator('address_id', pre=True, allow_reuse=True, check_fields=False)
     def address_object_to_uuid(cls, values):
