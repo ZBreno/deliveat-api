@@ -6,7 +6,6 @@ from .address import AddressReq
 from .rating import RatingReq
 from .order import OrderReq
 class UserReq(BaseModel):
-    id: Optional[UUID]
     name: str
     birthdate: date
     document: str

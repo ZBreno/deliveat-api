@@ -5,7 +5,6 @@ from typing import Optional, List, Any
 
 class RatingReq(BaseModel):
     
-    id: Optional[UUID]
     rating: float
     description: Optional[str]
     user_id: UUID

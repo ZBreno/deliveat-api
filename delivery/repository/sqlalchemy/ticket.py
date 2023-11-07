@@ -16,6 +16,7 @@ class TicketRepository:
             self.sess.commit()
         except:
             return False
+        
         return True
 
     def update_ticket(self, id: UUID, details: Dict[str, Any]) -> bool:

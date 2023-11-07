@@ -5,7 +5,6 @@ from typing import Optional, List, Any
 from .product import ProductReq
     
 class OrderReq(BaseModel):
-    id: Optional[UUID]
     total: float
     observation: Optional[str]
     address_id: UUID

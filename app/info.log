@@ -88,3 +88,11 @@ Log: [bf8709d1-51d1-4292-b538-37a347f0dd7a: 2023-11-07T09:26:08.875828-0300 - IN
 Log: [bf8709d1-51d1-4292-b538-37a347f0dd7a: 2023-11-07T09:26:08.876828-0300 - INFO - Successfully accessed /openapi.json 
 Log: [ce4f0390-f846-451b-a829-f484008c62a6: 2023-11-07T09:26:14.075452-0300 - INFO - Request to access /deliveat/1 
 Log: [ce4f0390-f846-451b-a829-f484008c62a6: 2023-11-07T09:26:14.077450-0300 - INFO - Successfully accessed /deliveat/1 
+Log: [0cacc10d-d195-4823-9105-2d68d2ce3415: 2023-11-07T13:32:40.097783-0300 - INFO - Request to access / 
+Log: [0cacc10d-d195-4823-9105-2d68d2ce3415: 2023-11-07T13:32:40.097783-0300 - INFO - Successfully accessed / 
+Log: [4c640c04-0315-4113-8b63-c03e42b1d37d: 2023-11-07T13:32:40.691820-0300 - INFO - Request to access /favicon.ico 
+Log: [4c640c04-0315-4113-8b63-c03e42b1d37d: 2023-11-07T13:32:40.694986-0300 - INFO - Successfully accessed /favicon.ico 
+Log: [669d29a6-cf45-400d-9739-210f99435d7b: 2023-11-07T13:35:29.180503-0300 - INFO - Request to access /1 
+Log: [669d29a6-cf45-400d-9739-210f99435d7b: 2023-11-07T13:35:29.184564-0300 - INFO - Successfully accessed /1 
+Log: [6d4ee8e2-7dcf-4a34-ba9d-262d72a6f88d: 2023-11-07T13:35:41.474537-0300 - INFO - Request to access /deliveat/1 
+Log: [6d4ee8e2-7dcf-4a34-ba9d-262d72a6f88d: 2023-11-07T13:35:41.488106-0300 - INFO - Successfully accessed /deliveat/1 

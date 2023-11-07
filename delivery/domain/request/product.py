@@ -5,7 +5,6 @@ from typing import Optional, List, Any
 from .category import CategoryReq
 
 class ProductReq(BaseModel):
-    id: Optional[UUID]
     name: str
     description: str
     cost: float
@@ -18,9 +17,9 @@ class ProductReq(BaseModel):
     #     else:
     #         return values.id.id
         
-    @validator('categories', pre=True, allow_reuse=True, check_fields=False)
-    def categories_set_to_list(cls, values):
-        return [v.to_dict() for v in values]
+    # @validator('categories', pre=True, allow_reuse=True, check_fields=False)
+    # def categories_set_to_list(cls, values):
+    #     return [v.to_dict() for v in values]
     
     class Config:
         orm_mode = True

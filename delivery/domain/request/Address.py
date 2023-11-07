@@ -3,14 +3,12 @@ from uuid import UUID
 from typing import Optional
 
 class AddressReq(BaseModel):
-    id: UUID
     street: str
     city: str
     district: int
     number: str
     complement: Optional[str]
     reference_point: Optional[str]
-    user_id: UUID
     
     class Config:
         orm_mode = True

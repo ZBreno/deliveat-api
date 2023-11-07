@@ -4,7 +4,6 @@ from datetime import date
 from typing import Optional
     
 class TicketReq(BaseModel):
-    id: Optional[UUID]
     deadline: date
     code: str
     description: str

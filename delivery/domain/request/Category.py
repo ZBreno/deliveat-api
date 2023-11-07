@@ -6,7 +6,6 @@ from typing import Optional, List, Any
 
 class CategoryReq(BaseModel):
     
-    id: Optional[UUID]
     name: str
     
     
