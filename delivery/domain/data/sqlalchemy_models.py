@@ -1,5 +1,5 @@
 from datetime import date
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, null
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column, backref
 from uuid import UUID
 from typing import List, Optional
@@ -30,19 +30,23 @@ class AssociationProductOrder(Base):
 
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
-    product_id: Mapped[UUID] = mapped_column(ForeignKey('product.id'), primary_key=True)
-    product_bonus_id: Mapped[UUID] = mapped_column(ForeignKey('product.id'), primary_key=True)
-    order_id: Mapped[UUID] = mapped_column(ForeignKey('order.id'), primary_key=True)
+    product_id: Mapped[UUID] = mapped_column(
+        ForeignKey('product.id'), primary_key=True)
+    product_bonus_id: Mapped[UUID] = mapped_column(
+        ForeignKey('product.id'), primary_key=True)
+    order_id: Mapped[UUID] = mapped_column(
+        ForeignKey('order.id'), primary_key=True)
 
     product: Mapped['Order'] = relationship(
         back_populates="products",
     )
 
-    product_bonus: Mapped['Order'] = relationship(
-        back_populates="products_bonus",
+    product_bonus: Mapped['Product'] = relationship(
+        back_populates="products_bonus", foreign_keys=[product_bonus_id],
     )
 
-   
+    # order: Mapped['Product'] = relationship(back_populates="orders")
+
 
 class Product(Base):
     __tablename__ = 'product'
@@ -55,9 +59,17 @@ class Product(Base):
 
     categories: Mapped[List['AssociationProductCategory']] = relationship(back_populates="product",
                                                                           cascade="all, delete")
+    
+    
 
-   
+    products_bonus: Mapped[List['AssociationProductOrder']] = relationship(
+        back_populates='product_bonus',
+        cascade="all, delete",
+        foreign_keys=[AssociationProductOrder.product_bonus_id],
+    )
 
+    # orders: Mapped[List['AssociationProductOrder']] = relationship(back_populates="order",
+    #                                                                       cascade="all, delete")
 
 
 class Category(Base):
@@ -84,7 +96,7 @@ class Address(Base):
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
 
-    user: Mapped["User"] = relationship(back_populates="addresses",)
+    user: Mapped["User"] = relationship(back_populates="addresses")
 
 
 class Ticket(Base):
@@ -114,12 +126,6 @@ class User(Base):
     role: Mapped[str]
 
     addresses: Mapped[List['Address']] = relationship(back_populates='user')
-    orders: Mapped[List['Order']] = relationship(
-        back_populates='user', foreign_keys='Order.user_id')
-    orders_store: Mapped[List['Order']] = relationship(
-        back_populates='store', foreign_keys='Order.store_id')
-    ratings: Mapped[List['Rating']] = relationship(
-        back_populates='store', foreign_keys='Rating.user_id')
 
 
 class Rating(Base):
@@ -128,12 +134,6 @@ class Rating(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
     rating: Mapped[int]
     description: Mapped[Optional[str]]
-
-    store: Mapped['User'] = relationship(
-        'User',
-        back_populates='ratings',
-        foreign_keys='Rating.user_id'
-    )
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
     order_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
@@ -152,20 +152,5 @@ class Order(Base):
     store_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
     user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
 
-    store: Mapped['User'] = relationship(
-        'User',
-        back_populates='orders_store',
-        foreign_keys='Order.store_id'  # Especifica a coluna de chave estrangeira correta
-    )
-
-    user: Mapped['User'] = relationship(
-        'User',
-        back_populates='orders',
-        foreign_keys='Order.user_id'  # Especifica a coluna de chave estrangeira correta
-    )
-    products_bonus: Mapped[List['AssociationProductOrder']] = relationship(
-         back_populates='product_bonus', cascade="all, delete")
-
     products: Mapped[List['AssociationProductOrder']] = relationship(back_populates="product",
-                                                     cascade="all, delete")
-
+                                                                     cascade="all, delete")

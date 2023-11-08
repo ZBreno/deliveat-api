@@ -96,3 +96,11 @@ Log: [669d29a6-cf45-400d-9739-210f99435d7b: 2023-11-07T13:35:29.180503-0300 - IN
 Log: [669d29a6-cf45-400d-9739-210f99435d7b: 2023-11-07T13:35:29.184564-0300 - INFO - Successfully accessed /1 
 Log: [6d4ee8e2-7dcf-4a34-ba9d-262d72a6f88d: 2023-11-07T13:35:41.474537-0300 - INFO - Request to access /deliveat/1 
 Log: [6d4ee8e2-7dcf-4a34-ba9d-262d72a6f88d: 2023-11-07T13:35:41.488106-0300 - INFO - Successfully accessed /deliveat/1 
+Log: [6aaf8e0f-6c3a-4111-9a02-1014b52b306b: 2023-11-07T14:56:46.802639-0300 - INFO - Request to access / 
+Log: [6aaf8e0f-6c3a-4111-9a02-1014b52b306b: 2023-11-07T14:56:46.922635-0300 - INFO - Successfully accessed / 
+Log: [c77a9659-c793-4fec-9f7e-5e5fddd887f9: 2023-11-07T14:56:47.018741-0300 - INFO - Request to access / 
+Log: [c77a9659-c793-4fec-9f7e-5e5fddd887f9: 2023-11-07T14:56:47.018741-0300 - INFO - Successfully accessed / 
+Log: [81168c2f-e0c1-4d14-a3e5-613bd2f4bd94: 2023-11-07T14:56:47.187135-0300 - INFO - Request to access / 
+Log: [81168c2f-e0c1-4d14-a3e5-613bd2f4bd94: 2023-11-07T14:56:47.195119-0300 - INFO - Successfully accessed / 
+Log: [5dd667d0-3a6e-4d63-9611-1824026b8cbf: 2023-11-07T14:56:55.574642-0300 - INFO - Request to access /deliveat/1 
+Log: [5dd667d0-3a6e-4d63-9611-1824026b8cbf: 2023-11-07T14:56:55.599087-0300 - INFO - Successfully accessed /deliveat/1 

@@ -23,6 +23,7 @@ async def add_address(req: AddressReq, sess: Session = Depends(sess_db)):
     repo: AddressRepository = AddressRepository(sess)
     address = req.model_dump()
     address['id'] = uuid4()
+    address['user_id'] = "cef6f7a8-1a0a-413f-a32b-45688af5515c"
     
     result = repo.insert_address(address)
     

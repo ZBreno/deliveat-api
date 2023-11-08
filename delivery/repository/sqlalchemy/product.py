@@ -10,13 +10,11 @@ class ProductRepository:
         self.sess: Session = sess
 
     def insert_product(self, product: Product) -> bool:
-        try:
-            object_mapper = Product(**product)
-            self.sess.add(object_mapper)
-            self.sess.commit()
-        except:
-            return False
-        return True
+    
+        object_mapper = Product(**product)
+        self.sess.add(object_mapper)
+        self.sess.commit()
+    
 
     def update_product(self, id: UUID, details: Dict[str, Any]) -> bool:
         try:
