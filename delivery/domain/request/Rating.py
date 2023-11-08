@@ -6,7 +6,7 @@ from typing import Optional, List, Any
 class RatingReq(BaseModel):
     
     rating: float
-    description: Optional[str]
+    description: Optional[str] = None
     user_id: UUID
     order_id: UUID
     

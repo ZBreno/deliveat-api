@@ -4,7 +4,7 @@ from typing import Optional
 
 class ProductBonusReq(BaseModel):
     name: str
-    description: Optional[str]
+    description: Optional[str] = None
     cost: float    
     
     class Config:

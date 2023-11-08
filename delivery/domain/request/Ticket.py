@@ -6,7 +6,7 @@ from typing import Optional
 class TicketReq(BaseModel):
     deadline: date
     code: str
-    description: str
+    description: Optional[str] = None
     type: str
     
     class Config:

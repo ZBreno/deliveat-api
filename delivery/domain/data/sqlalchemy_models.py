@@ -44,6 +44,7 @@ class AssociationProductOrder(Base):
     )
 
 class AssociationProductBonus(Base):
+    
     __tablename__ = 'association_product_bonus'
 
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
@@ -61,6 +62,7 @@ class AssociationProductBonus(Base):
         back_populates="products_bonus",
     )
 class Product(Base):
+    
     __tablename__ = 'product'
 
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
@@ -72,20 +74,18 @@ class Product(Base):
     categories: Mapped[Optional[List['AssociationProductCategory']]] = relationship(back_populates="product",
                                                                                     cascade="all, delete")
 
-    orders: Mapped[List['AssociationProductOrder']] = relationship(
+    orders: Mapped[Optional[List['AssociationProductOrder']]] = relationship(
         back_populates='order',
         cascade="all, delete",
     )
     
-    products_bonus: Mapped[List['AssociationProductBonus']] = relationship(
+    products_bonus: Mapped[Optional[List['AssociationProductBonus']]] = relationship(
         back_populates='product_bonus',
         cascade="all, delete",
     )
 
     # orders: Mapped[List['AssociationProductOrder']] = relationship(back_populates="order",
     #                                                                       cascade="all, delete")
-
-
 class ProductBonus(Base):
 
     __tablename__ = 'product_bonus'
@@ -93,7 +93,7 @@ class ProductBonus(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
     name: Mapped[str]
-    description: Mapped[Optional[str]] = mapped_column(nullable=True)
+    description: Mapped[Optional[str]]
     cost: Mapped[int]
 
     
@@ -120,7 +120,7 @@ class Address(Base):
     street = Mapped[str]
     city = Mapped[str]
     district = Mapped[str]
-    number = Mapped[str]
+    number =  Mapped[Optional[str]]
     complement = Mapped[Optional[str]]
     reference_point = Mapped[Optional[str]]
 
@@ -148,7 +148,7 @@ class User(Base):
     name: Mapped[str]
     birthdate: Mapped[date]
     document: Mapped[str] = mapped_column(unique=True)
-    phone: Mapped[str] = mapped_column(unique=True)
+    phone: Mapped[Optional[str]] = mapped_column(unique=True)
     email: Mapped[str] = mapped_column(unique=True)
     password: Mapped[str]
     whatsapp: Mapped[Optional[str]] = mapped_column(unique=True)

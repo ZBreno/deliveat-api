@@ -6,9 +6,9 @@ class AddressReq(BaseModel):
     street: str
     city: str
     district: str
-    number: str
-    complement: Optional[str]
-    reference_point: Optional[str]
+    number: Optional[str] = None
+    complement: Optional[str] = None
+    reference_point: Optional[str] = None
     
     class Config:
         orm_mode = True

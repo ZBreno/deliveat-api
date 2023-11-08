@@ -9,11 +9,11 @@ class UserReq(BaseModel):
     name: str
     birthdate: date
     document: str
-    phone: Optional[str]
+    phone: Optional[str] = None
     email: str
     password: str
-    whatsapp: Optional[str]
-    instagram: Optional[str]
+    whatsapp: Optional[str] = None
+    instagram: Optional[str] = None
     role: str
     class Config:
         orm_mode = True

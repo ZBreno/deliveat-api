@@ -6,7 +6,7 @@ from .product import ProductReq
     
 class OrderReq(BaseModel):
     total: float
-    observation: Optional[str]
+    observation: Optional[str] = None
     address_id: UUID
     store_id: UUID
     products: List[ProductReq]
