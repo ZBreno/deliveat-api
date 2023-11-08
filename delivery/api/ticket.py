@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from ..db_config.sqlalchemy_connect import SessionFactory
-from ..domain.request.Ticket import TicketReq
-from ..repository.sqlalchemy.ticket import TicketRepository
+from db_config.sqlalchemy_connect import SessionFactory
+from domain.request.ticket import TicketReq
+from repository.sqlalchemy.ticket import TicketRepository
 from uuid import UUID, uuid4
 
 router = APIRouter(prefix='/ticket', tags=['Ticket'])

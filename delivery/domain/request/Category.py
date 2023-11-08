@@ -8,5 +8,5 @@ class CategoryReq(BaseModel):
     
     name: str
         
-    class Config:
-        orm_mode = True
+    # class Config:
+    #     orm_mode = True

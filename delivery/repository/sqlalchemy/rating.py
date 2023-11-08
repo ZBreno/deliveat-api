@@ -1,6 +1,6 @@
 from typing import Dict, Any, List
 from sqlalchemy.orm import Session
-from ...domain.data.sqlalchemy_models import Rating
+from domain.data.sqlalchemy_models import Rating
 from uuid import UUID
 
 

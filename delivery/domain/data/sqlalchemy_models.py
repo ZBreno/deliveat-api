@@ -1,5 +1,5 @@
 from datetime import date
-from sqlalchemy import ForeignKey, null
+from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column, backref
 from uuid import UUID
 from typing import List, Optional
@@ -32,8 +32,6 @@ class AssociationProductOrder(Base):
 
     product_id: Mapped[UUID] = mapped_column(
         ForeignKey('product.id'), primary_key=True)
-    product_bonus_id: Mapped[UUID] = mapped_column(
-        ForeignKey('product.id'), primary_key=True)
     order_id: Mapped[UUID] = mapped_column(
         ForeignKey('order.id'), primary_key=True)
 
@@ -41,36 +39,68 @@ class AssociationProductOrder(Base):
         back_populates="products",
     )
 
-    product_bonus: Mapped['Product'] = relationship(
-        back_populates="products_bonus", foreign_keys=[product_bonus_id],
+    order: Mapped['Product'] = relationship(
+        back_populates="orders",
     )
 
-    # order: Mapped['Product'] = relationship(back_populates="orders")
+class AssociationProductBonus(Base):
+    __tablename__ = 'association_product_bonus'
 
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
+    product_id: Mapped[UUID] = mapped_column(
+        ForeignKey('product.id'), primary_key=True)
+    product_bonus_id: Mapped[UUID] = mapped_column(
+        ForeignKey('product_bonus.id'), primary_key=True)
+    
+    product: Mapped['ProductBonus'] = relationship(
+        back_populates="products",
+    )
+
+    product_bonus: Mapped['Product'] = relationship(
+        back_populates="products_bonus",
+    )
 class Product(Base):
     __tablename__ = 'product'
 
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
     name: Mapped[str]
-    description: Mapped[Optional[str]]
+    description: Mapped[Optional[str]] = mapped_column(nullable=True)
     cost: Mapped[int]
 
-    categories: Mapped[List['AssociationProductCategory']] = relationship(back_populates="product",
-                                                                          cascade="all, delete")
-    
-    
+    categories: Mapped[Optional[List['AssociationProductCategory']]] = relationship(back_populates="product",
+                                                                                    cascade="all, delete")
 
-    products_bonus: Mapped[List['AssociationProductOrder']] = relationship(
+    orders: Mapped[List['AssociationProductOrder']] = relationship(
+        back_populates='order',
+        cascade="all, delete",
+    )
+    
+    products_bonus: Mapped[List['AssociationProductBonus']] = relationship(
         back_populates='product_bonus',
         cascade="all, delete",
-        foreign_keys=[AssociationProductOrder.product_bonus_id],
     )
 
     # orders: Mapped[List['AssociationProductOrder']] = relationship(back_populates="order",
     #                                                                       cascade="all, delete")
 
+
+class ProductBonus(Base):
+
+    __tablename__ = 'product_bonus'
+
+    id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
+
+    name: Mapped[str]
+    description: Mapped[Optional[str]] = mapped_column(nullable=True)
+    cost: Mapped[int]
+
+    
+    products: Mapped[List['AssociationProductBonus']] = relationship(
+        back_populates='product',
+        cascade="all, delete",
+    )
 
 class Category(Base):
     __tablename__ = 'category'

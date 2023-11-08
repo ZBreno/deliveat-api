@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from ..db_config.sqlalchemy_connect import SessionFactory
-from ..domain.request.Address import AddressReq 
-from ..repository.sqlalchemy.address import AddressRepository
+from db_config.sqlalchemy_connect import SessionFactory
+from domain.request.address import AddressReq 
+from repository.sqlalchemy.address import AddressRepository
 from uuid import UUID, uuid4
 
 router = APIRouter(prefix='/address', tags=['Address'])

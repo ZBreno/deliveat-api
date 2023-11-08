@@ -1,6 +1,6 @@
 from typing import Dict, Any, List
 from sqlalchemy.orm import Session
-from ...domain.data.sqlalchemy_models import Product
+from domain.data.sqlalchemy_models import Product, Category
 from uuid import UUID
 
 
@@ -10,7 +10,6 @@ class ProductRepository:
         self.sess: Session = sess
 
     def insert_product(self, product: Product) -> bool:
-    
         object_mapper = Product(**product)
         self.sess.add(object_mapper)
         self.sess.commit()
