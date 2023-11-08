@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends
-from api import ticket, rating, address, category, Order, product, User
+from .api import ticket, rating, address, category, Order, product, User
 
 app = FastAPI()
 app.include_router(ticket.router)

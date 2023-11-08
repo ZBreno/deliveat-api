@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
-from db_config.sqlalchemy_connect import SessionFactory
-from domain.request.rating import RatingReq
-from repository.sqlalchemy.rating import RatingRepository
+from ..db_config.sqlalchemy_connect import SessionFactory
+from ..domain.request.Rating import RatingReq
+from ..repository.sqlalchemy.rating import RatingRepository
 from uuid import UUID, uuid4
 
 router = APIRouter(prefix='/rating', tags=['Rating'])

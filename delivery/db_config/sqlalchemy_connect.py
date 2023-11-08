@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from domain.data.sqlalchemy_models import Base
+from ..domain.data.sqlalchemy_models import Base
 
 DB_URL = "postgresql://postgres:123@localhost:5432/deliveat"
 

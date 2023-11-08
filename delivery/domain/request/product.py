@@ -2,7 +2,7 @@ from pydantic import BaseModel, validator
 from uuid import UUID
 from datetime import date
 from typing import Optional, List, Any
-from .category import CategoryReq
+from .Category import CategoryReq
 
 class ProductReq(BaseModel):
     id: Optional[UUID]

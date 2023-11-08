@@ -2,9 +2,9 @@ from pydantic import BaseModel, validator
 from uuid import UUID
 from datetime import date
 from typing import Optional, List
-from .address import AddressReq
-from .rating import RatingReq
-from .order import OrderReq
+from .Address import AddressReq
+from .Rating import RatingReq
+from .Order import OrderReq
 class UserReq(BaseModel):
     id: Optional[UUID]
     name: str

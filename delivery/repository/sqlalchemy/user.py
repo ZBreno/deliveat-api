@@ -1,6 +1,6 @@
 from typing import Dict, Any, List
 from sqlalchemy.orm import Session
-from domain.data.sqlalchemy_models import User
+from ...domain.data.sqlalchemy_models import User
 from uuid import UUID
 
 
