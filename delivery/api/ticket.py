@@ -60,7 +60,7 @@ async def delete_ticket(id: UUID, sess: Session = Depends(sess_db)):
 @router.get("/list")
 async def list_ticket(sess: Session = Depends(sess_db)):
     repo: TicketRepository = TicketRepository(sess)
-    result = repo.get_all_login()
+    result = repo.get_all_ticket()
     return result
 
 
