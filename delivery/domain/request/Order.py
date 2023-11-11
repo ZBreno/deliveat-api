@@ -9,7 +9,7 @@ class OrderReq(BaseModel):
     observation: Optional[str]
     address_id: UUID
     store_id: UUID
-    products: List[ProductReq]
+    products: UUID
     
     class Config:
         orm_mode = True

@@ -8,8 +8,8 @@ class ProductReq(BaseModel):
     name: str
     description: Optional[str]
     cost: float
-    categories: List[CategoryReq]
-    product_bonus: Optional[List[UUID]]
+    categories: UUID
+    product_bonus: Optional[List[UUID]] = []
     
     # @validator('categories', pre=True, allow_reuse=True)
     # def categories_set_to_list(cls, categories):

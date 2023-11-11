@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from ..db_config.sqlalchemy_connect import SessionFactory
 from ..domain.request.Address import AddressReq 
 from ..repository.sqlalchemy.address import AddressRepository
+from ..domain.data.sqlalchemy_models import User
 from uuid import UUID, uuid4
 
 router = APIRouter(prefix='/address', tags=['Address'])
@@ -20,10 +21,12 @@ def sess_db():
 
 @router.post("/add")
 async def add_address(req: AddressReq, sess: Session = Depends(sess_db)):
+    user = sess.query(User).order_by(User.id.desc()).first()
+
     repo: AddressRepository = AddressRepository(sess)
     address = req.model_dump()
     address['id'] = uuid4()
-    address['user_id'] = "cef6f7a8-1a0a-413f-a32b-45688af5515c"
+    address['user_id'] = user.id
     
     result = repo.insert_address(address)
     

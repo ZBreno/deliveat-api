@@ -5,7 +5,7 @@ from typing import Optional
 class AddressReq(BaseModel):
     street: str
     city: str
-    district: int
+    district: str
     number: str
     complement: Optional[str]
     reference_point: Optional[str]

@@ -67,5 +67,5 @@ async def list_ticket(sess: Session = Depends(sess_db)):
 @router.get("/get/{id}")
 async def get_ticket(id: UUID, sess: Session = Depends(sess_db)):
     repo: TicketRepository = TicketRepository(sess)
-    result = repo.get_login(id)
+    result = repo.get_ticket(id)
     return result

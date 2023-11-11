@@ -87,12 +87,12 @@ class Address(Base):
 
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
-    street = Mapped[str]
-    city = Mapped[str]
-    district = Mapped[str]
-    number = Mapped[str]
-    complement = Mapped[Optional[str]]
-    reference_point = Mapped[Optional[str]]
+    street : Mapped[str]
+    city : Mapped[str]
+    district : Mapped[str]
+    number : Mapped[str]
+    complement : Mapped[Optional[str]]
+    reference_point : Mapped[Optional[str]]
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
 
