@@ -16,4 +16,4 @@ class UserReq(BaseModel):
     instagram: Optional[str] = None
     role: str
     class Config:
-        orm_mode = True
+        from_attributes = True

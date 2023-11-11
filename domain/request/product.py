@@ -8,8 +8,9 @@ class ProductReq(BaseModel):
     name: str
     description: Optional[str] = None
     cost: float
-    categories: Optional[List[CategoryReq]] = []
-    products_bonus: Optional[List[ProductBonusReq]] = []
+    categories: Optional[List[UUID]] = []
+    products_bonus: Optional[List[UUID]] = []
     
     class Config:
-        orm_mode = True
+        from_attributes = True
+    

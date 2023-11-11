@@ -1,14 +1,12 @@
 from datetime import date
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column, backref
+from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from uuid import UUID
 from typing import List, Optional
 
 
 class Base(DeclarativeBase):
     pass
-
-
 class AssociationProductCategory(Base):
     __tablename__ = 'association_product_category'
 
@@ -23,8 +21,6 @@ class AssociationProductCategory(Base):
         back_populates='products')
     product: Mapped['Product'] = relationship(
         back_populates='categories')
-
-
 class AssociationProductOrder(Base):
     __tablename__ = 'association_product_order'
 
@@ -42,7 +38,6 @@ class AssociationProductOrder(Base):
     order: Mapped['Product'] = relationship(
         back_populates="orders",
     )
-
 class AssociationProductBonus(Base):
     
     __tablename__ = 'association_product_bonus'
@@ -70,7 +65,7 @@ class Product(Base):
     name: Mapped[str]
     description: Mapped[Optional[str]] = mapped_column(nullable=True)
     cost: Mapped[int]
-
+    
     categories: Mapped[Optional[List['AssociationProductCategory']]] = relationship(back_populates="product",
                                                                                     cascade="all, delete")
 
@@ -101,7 +96,6 @@ class ProductBonus(Base):
         back_populates='product',
         cascade="all, delete",
     )
-
 class Category(Base):
     __tablename__ = 'category'
 
@@ -110,25 +104,21 @@ class Category(Base):
 
     products: Mapped[List['AssociationProductCategory']] = relationship(back_populates="category",
                                                                         cascade="all, delete")
-
-
 class Address(Base):
     __tablename__ = 'address'
 
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
-    street = Mapped[str]
-    city = Mapped[str]
-    district = Mapped[str]
-    number =  Mapped[Optional[str]]
-    complement = Mapped[Optional[str]]
-    reference_point = Mapped[Optional[str]]
+    street: Mapped[str]
+    city: Mapped[str]
+    district: Mapped[str]
+    number:  Mapped[Optional[str]]
+    complement: Mapped[Optional[str]]
+    reference_point:  Mapped[Optional[str]]
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
 
     user: Mapped["User"] = relationship(back_populates="addresses")
-
-
 class Ticket(Base):
     __tablename__ = 'ticket'
 
@@ -138,8 +128,6 @@ class Ticket(Base):
     code: Mapped[str] = mapped_column(unique=True)
     description: Mapped[Optional[str]]
     type: Mapped[str]
-
-
 class User(Base):
     __tablename__ = 'user'
 
@@ -156,8 +144,6 @@ class User(Base):
     role: Mapped[str]
 
     addresses: Mapped[List['Address']] = relationship(back_populates='user')
-
-
 class Rating(Base):
     __tablename__ = 'rating'
 
@@ -167,8 +153,6 @@ class Rating(Base):
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
     order_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
-
-
 class Order(Base):
     __tablename__ = 'order'
 

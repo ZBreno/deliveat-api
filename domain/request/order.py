@@ -12,4 +12,4 @@ class OrderReq(BaseModel):
     products: List[ProductReq]
     
     class Config:
-        orm_mode = True
+        from_attributes = True

@@ -60,12 +60,12 @@ async def delete_rating(id: UUID, sess: Session = Depends(sess_db)):
 @router.get("/list")
 async def list_rating(sess: Session = Depends(sess_db)):
     repo: RatingRepository = RatingRepository(sess)
-    result = repo.get_all_login()
+    result = repo.get_all_rating()
     return result
 
 
 @router.get("/get/{id}")
 async def get_rating(id: UUID, sess: Session = Depends(sess_db)):
     repo: RatingRepository = RatingRepository(sess)
-    result = repo.get_login(id)
+    result = repo.get_rating(id)
     return result

@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
-from domain.request.address import AddressReq 
+from domain.request.address import AddressReq
 from repository.sqlalchemy.address import AddressRepository
 from uuid import UUID, uuid4
 
@@ -23,8 +23,7 @@ async def add_address(req: AddressReq, sess: Session = Depends(sess_db)):
     repo: AddressRepository = AddressRepository(sess)
     address = req.model_dump()
     address['id'] = uuid4()
-    address['user_id'] = "cef6f7a8-1a0a-413f-a32b-45688af5515c"
-    
+    address['user_id'] = "3dd94fdd-f5d0-4ec7-a51c-b282ee1dad23"
     result = repo.insert_address(address)
     
     if result:

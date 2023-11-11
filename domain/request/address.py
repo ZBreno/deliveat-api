@@ -11,5 +11,5 @@ class AddressReq(BaseModel):
     reference_point: Optional[str] = None
     
     class Config:
-        orm_mode = True
+        from_attributes = True
         
