@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
-from domain.request.product import ProductReq 
+from domain.request.product import ProductReq
 from repository.sqlalchemy.product import ProductRepository
 from uuid import UUID, uuid4
 
@@ -19,13 +19,13 @@ def sess_db():
 
 
 @router.post("/add")
-async def add_product(req: ProductReq, sess: Session = Depends(sess_db)):
+def add_product(req: ProductReq, sess: Session = Depends(sess_db)):
     repo: ProductRepository = ProductRepository(sess)
-    product = req.model_dump()
+    product = jsonable_encoder(req)
     product['id'] = uuid4()
-    
+
     result = repo.insert_product(product)
-    
+
     if result:
         return JSONResponse(content=jsonable_encoder(product), status_code=status.HTTP_201_CREATED)
     else:
@@ -33,13 +33,13 @@ async def add_product(req: ProductReq, sess: Session = Depends(sess_db)):
 
 
 @router.patch("/update/{id}")
-async def update_product(id: UUID, req: ProductReq, sess: Session = Depends(sess_db)):
-    
+def update_product(id: UUID, req: ProductReq, sess: Session = Depends(sess_db)):
+
     product = req.model_dump(exclude_unset=True)
     repo: ProductRepository = ProductRepository(sess)
-    
+
     result = repo.update_product(id, product)
-    
+
     if result:
         return JSONResponse(content=jsonable_encoder(product), status_code=status.HTTP_200_OK)
     else:
@@ -47,10 +47,10 @@ async def update_product(id: UUID, req: ProductReq, sess: Session = Depends(sess
 
 
 @router.delete("/delete/{id}")
-async def delete_product(id: UUID, sess: Session = Depends(sess_db)):
+def delete_product(id: UUID, sess: Session = Depends(sess_db)):
     repo: ProductRepository = ProductRepository(sess)
     result = repo.delete_product(id)
-    
+
     if result:
         return JSONResponse(content={'message': 'product deleted successfully'}, status_code=status.HTTP_204_NO_CONTENT)
     else:
@@ -58,14 +58,14 @@ async def delete_product(id: UUID, sess: Session = Depends(sess_db)):
 
 
 @router.get("/list")
-async def list_product(sess: Session = Depends(sess_db)):
+def list_product(sess: Session = Depends(sess_db)):
     repo: ProductRepository = ProductRepository(sess)
     result = repo.get_all_product()
     return result
 
 
 @router.get("/get/{id}")
-async def get_product(id: UUID, sess: Session = Depends(sess_db)):
+def get_product(id: UUID, sess: Session = Depends(sess_db)):
     repo: ProductRepository = ProductRepository(sess)
     result = repo.get_product(id)
     return result

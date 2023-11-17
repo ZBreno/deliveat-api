@@ -19,7 +19,7 @@ def sess_db():
 
 
 @router.post("/add")
-async def add_rating(req: RatingReq, sess: Session = Depends(sess_db)):
+def add_rating(req: RatingReq, sess: Session = Depends(sess_db)):
     repo: RatingRepository = RatingRepository(sess)
     rating = req.model_dump()
     rating['id'] = uuid4()
@@ -33,7 +33,7 @@ async def add_rating(req: RatingReq, sess: Session = Depends(sess_db)):
 
 
 @router.patch("/update/{id}")
-async def update_rating(id: UUID, req: RatingReq, sess: Session = Depends(sess_db)):
+def update_rating(id: UUID, req: RatingReq, sess: Session = Depends(sess_db)):
     
     rating = req.model_dump(exclude_unset=True)
     repo: RatingRepository = RatingRepository(sess)
@@ -47,7 +47,7 @@ async def update_rating(id: UUID, req: RatingReq, sess: Session = Depends(sess_d
 
 
 @router.delete("/delete/{id}")
-async def delete_rating(id: UUID, sess: Session = Depends(sess_db)):
+def delete_rating(id: UUID, sess: Session = Depends(sess_db)):
     repo: RatingRepository = RatingRepository(sess)
     result = repo.delete_rating(id)
     
@@ -58,14 +58,14 @@ async def delete_rating(id: UUID, sess: Session = Depends(sess_db)):
 
 
 @router.get("/list")
-async def list_rating(sess: Session = Depends(sess_db)):
+def list_rating(sess: Session = Depends(sess_db)):
     repo: RatingRepository = RatingRepository(sess)
     result = repo.get_all_rating()
     return result
 
 
 @router.get("/get/{id}")
-async def get_rating(id: UUID, sess: Session = Depends(sess_db)):
+def get_rating(id: UUID, sess: Session = Depends(sess_db)):
     repo: RatingRepository = RatingRepository(sess)
     result = repo.get_rating(id)
     return result

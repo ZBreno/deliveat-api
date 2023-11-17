@@ -19,7 +19,7 @@ def sess_db():
 
 
 @router.post("/add")
-async def add_product_bonus(req: ProductBonusReq, sess: Session = Depends(sess_db)):
+def add_product_bonus(req: ProductBonusReq, sess: Session = Depends(sess_db)):
     repo: ProductBonusRepository = ProductBonusRepository(sess)
     product_bonus = req.model_dump()
     product_bonus['id'] = uuid4()
@@ -33,7 +33,7 @@ async def add_product_bonus(req: ProductBonusReq, sess: Session = Depends(sess_d
 
 
 @router.patch("/update/{id}")
-async def update_product_bonus(id: UUID, req: ProductBonusReq, sess: Session = Depends(sess_db)):
+def update_product_bonus(id: UUID, req: ProductBonusReq, sess: Session = Depends(sess_db)):
     
     product_bonus = req.model_dump(exclude_unset=True)
     repo: ProductBonusRepository = ProductBonusRepository(sess)
@@ -47,7 +47,7 @@ async def update_product_bonus(id: UUID, req: ProductBonusReq, sess: Session = D
 
 
 @router.delete("/delete/{id}")
-async def delete_product_bonus(id: UUID, sess: Session = Depends(sess_db)):
+def delete_product_bonus(id: UUID, sess: Session = Depends(sess_db)):
     repo: ProductBonusRepository = ProductBonusRepository(sess)
     result = repo.delete_product_bonus(id)
     
@@ -58,14 +58,14 @@ async def delete_product_bonus(id: UUID, sess: Session = Depends(sess_db)):
 
 
 @router.get("/list")
-async def list_product_bonus(sess: Session = Depends(sess_db)):
+def list_product_bonus(sess: Session = Depends(sess_db)):
     repo: ProductBonusRepository = ProductBonusRepository(sess)
     result = repo.get_all_product_bonus()
     return result
 
 
 @router.get("/get/{id}")
-async def get_product_bonus(id: UUID, sess: Session = Depends(sess_db)):
+def get_product_bonus(id: UUID, sess: Session = Depends(sess_db)):
     repo: ProductBonusRepository = ProductBonusRepository(sess)
     result = repo.get_product_bonus(id)
     return result

@@ -5,7 +5,15 @@ from typing import Optional, List, Any
 
 
 class CategoryReq(BaseModel):
-    
+    name: str
+        
+    class Config:
+        from_attributes = True
+        
+        
+
+class CategoryAssociationReq(BaseModel):
+    id: UUID
     name: str
         
     class Config:
