@@ -64,7 +64,7 @@ class Product(Base):
 
     name: Mapped[str]
     description: Mapped[Optional[str]]
-    cost: Mapped[int]
+    cost: Mapped[float]
     
     categories: Mapped[Optional[List['AssociationProductCategory']]] = relationship(back_populates="product",
                                                                                     cascade="all, delete")
@@ -91,7 +91,7 @@ class ProductBonus(Base):
 
     name: Mapped[str]
     description: Mapped[Optional[str]]
-    cost: Mapped[int]
+    cost: Mapped[float]
 
     
     products: Mapped[List['AssociationProductBonus']] = relationship(
