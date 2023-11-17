@@ -2,11 +2,10 @@ from fastapi.testclient import TestClient
 from datetime import date
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from ..domain.request.Ticket import TicketReq
 
-from ..domain.data.sqlalchemy_models import Ticket
+from domain.data.sqlalchemy_models import Ticket
 
-from ..main import app
+from main import app
 
 client = TestClient(app)
 
@@ -16,16 +15,13 @@ engine = create_engine(DB_URL)
 session = Session(engine)
 
 def test_ticket_model():
-    ticket = TicketReq(
+    ticket = Ticket(
         deadline = date(2004,8,25).isoformat(),
         code = "#BOADIA",
         description = "30 de desconto em compras acima de R$20",
         type = "socorro")
 
-    assert ticket.deadline == date(2004,8,25)
-    assert ticket.code == "#BOADIA"
-    assert ticket.description == "30 de desconto em compras acima de R$20"
-    assert ticket.type == "socorro"
+    assert str(ticket) == ticket.code
 
 def test_create_ticket():
     response = client.post("/ticket/add", json={

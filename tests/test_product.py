@@ -1,10 +1,9 @@
 from fastapi.testclient import TestClient
-from ..domain.request.product import ProductReq
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from ..domain.data.sqlalchemy_models import Category
+from domain.data.sqlalchemy_models import Product, Category
 
-from ..main import app
+from main import app
 
 client = TestClient(app)
 
@@ -18,20 +17,16 @@ def test_product_model():
         "name" : "BOLOS"
         }
     )
-
     category = session.query(Category).order_by(Category.id.desc()).first()
     
-    product = ProductReq(
+    product = Product(
         name = "Pão com queijo",
         description = "Pão e queijo",
         cost = 90.99,
-        categories = category.id
+        categories = [category]
     )
 
-    assert product.name == "Pão com queijo"
-    assert product.description == "Pão e queijo"
-    assert product.cost == 90.99
-    assert product.categories == category.id
+    assert str(product) == product.name
 
 def test_create_product():
     category = session.query(Category).order_by(Category.id.desc()).first()

@@ -1,11 +1,10 @@
 from fastapi.testclient import TestClient
-from ..domain.request.Category import CategoryReq
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from ..domain.data.sqlalchemy_models import Category
+from domain.data.sqlalchemy_models import Category
 
-from ..main import app
+from main import app
 
 client = TestClient(app)
 
@@ -15,10 +14,10 @@ engine = create_engine(DB_URL)
 session = Session(engine)
 
 def test_category_model():
-    category = CategoryReq(
+    category = Category(
         name = "Massas" )
 
-    assert category.name == "Massas"
+    assert str(category) == "Massas"
 
 def test_create_category():
     response = client.post("/category/add", json={

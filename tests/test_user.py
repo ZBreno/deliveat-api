@@ -2,12 +2,11 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 
-from ..repository.sqlalchemy.user import UserRepository
-from ..domain.request.User import UserReq
+from domain.request.user import UserReq
 
-from ..domain.data.sqlalchemy_models import User
+from domain.data.sqlalchemy_models import User
 
-from ..main import app
+from main import app
 from datetime import date
 
 client = TestClient(app)
@@ -18,7 +17,7 @@ engine = create_engine(DB_URL)
 session = Session(engine)
 
 def test_user_model():
-    user = UserReq(
+    user = User(
         name="maria", 
         birthdate=date(2004,8,25).isoformat(), 
         document="321.435.453-78", 
@@ -29,15 +28,7 @@ def test_user_model():
         instagram= "@maria556",
         role= "client")
 
-    assert user.name == "maria"
-    assert user.birthdate == date(2004,8,25)
-    assert user.document == "321.435.453-78"
-    assert user.phone == "81028394"
-    assert user.email == "maria@gmail.com"
-    assert user.password == "senha123"
-    assert user.whatsapp == "81028394"
-    assert user.instagram == "@maria556"
-    assert user.role == "client"
+    assert str(user) == user.name
 
 def test_create_user():
     response = client.post("/user/add", json={

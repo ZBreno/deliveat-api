@@ -1,12 +1,12 @@
 from fastapi.testclient import TestClient
-from ..domain.request.Address import AddressReq
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
+from uuid import uuid4
 from datetime import date
 
-from ..domain.data.sqlalchemy_models import Address
+from domain.data.sqlalchemy_models import Address
 
-from ..main import app
+from main import app
 
 client = TestClient(app)
 
@@ -16,7 +16,8 @@ engine = create_engine(DB_URL)
 session = Session(engine)
 
 def test_address_model():
-    address = AddressReq(
+    address = Address(
+        id = uuid4(),
         street= "Rua das flores",
         city= "Pau dos Ferros",
         district= "São Benedito",
@@ -25,12 +26,7 @@ def test_address_model():
         reference_point= "nenhum"
     )
 
-    assert address.street == "Rua das flores"
-    assert address.city == "Pau dos Ferros"
-    assert address.district == "São Benedito"
-    assert address.number == "124"
-    assert address.complement == "nenhum"
-    assert address.reference_point == "nenhum"
+    assert str(address) == f"{address.city} - {address.district} / {address.street}"
 
 def test_create_address():
     client.post("/user/add", json={

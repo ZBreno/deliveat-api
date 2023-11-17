@@ -1,11 +1,10 @@
 from fastapi.testclient import TestClient
 from datetime import date
-from ..domain.request.Rating import RatingReq
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from ..domain.data.sqlalchemy_models import Category, Product, User,Address, Rating, Order
+from domain.data.sqlalchemy_models import Category, Product, User,Address, Rating, Order
 
-from ..main import app
+from main import app
 
 DB_URL = "postgresql://postgres:123@localhost:5432/deliveat"
 
@@ -65,16 +64,13 @@ def test_rating_model():
     )
     order = session.query(Order).order_by(Order.id.desc()).first()
 
-    rating = RatingReq(
+    rating = Rating(
         rating = 5,
         description = "Gostei",
         user_id = user.id,
         order_id = order.id)
 
-    assert rating.rating == 5
-    assert rating.description == "Gostei"
-    assert rating.user_id == user.id
-    assert rating.order_id == order.id
+    assert str(rating) == f"{rating.user_id} - {rating.order_id} / {rating.rating}"
 
 def test_create_rating():
     order = session.query(Order).order_by(Order.id.desc()).first()
