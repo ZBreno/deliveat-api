@@ -1,25 +1,45 @@
 from fastapi.testclient import TestClient
+from datetime import date
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
 
-from ..main import app
+from domain.data.sqlalchemy_models import Ticket
+
+from main import app
 
 client = TestClient(app)
 
+DB_URL = "postgresql://postgres:123@localhost:5432/deliveat"
+
+engine = create_engine(DB_URL)
+session = Session(engine)
+
+def test_ticket_model():
+    ticket = Ticket(
+        deadline = date(2004,8,25).isoformat(),
+        code = "#BOADIA",
+        description = "30 de desconto em compras acima de R$20",
+        type = "socorro")
+
+    assert str(ticket) == ticket.code
+
 def test_create_ticket():
     response = client.post("/ticket/add", json={
-        "deadline": "2023-11-08",
-        "code": "#BOATARDE",
-        "description": "30% de desconto em compras acima de R$20",
+        "deadline": date(2004,8,25).isoformat(),
+        "code": "#TARDE",
+        "description": "30 de desconto em compras acima de R$20",
         "type": "socorro"
         }
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
 
 def test_update_ticket():
-    response = client.patch("/ticket/update/1", json={
-        "deadline": "2023-11-08",
-        "code": "#BOTARDE",
-        "description": "50% de desconto em compras acima de R$20",
-        "type": "socdorro"
+    ticket = session.query(Ticket).order_by(Ticket.id.desc()).first()
+    response = client.patch(f"/ticket/update/{ticket}", json={
+        "deadline": date(2004,8,25).isoformat(),
+        "code": "#SOCORRO",
+        "description": "50 de desconto em compras acima de R$20",
+        "type": "socorro"
         }
     )
     assert response.status_code == 200
@@ -29,10 +49,12 @@ def test_get_list_ticket():
     assert response.status_code == 200
 
 def test_get_ticket():
-    response = client.get("/ticket/get/1")
+    ticket = session.query(Ticket).order_by(Ticket.id.desc()).first()
+    response = client.get(f"/ticket/get/{ticket.id}")
     assert response.status_code == 200
 
 def test_delete_ticket():
-    response = client.get("/ticket/delete/1")
-    assert response.status_code == 200
+    ticket = session.query(Ticket).order_by(Ticket.id.desc()).first()
+    response = client.delete(f"/ticket/delete/{ticket.id}")
+    assert response.status_code == 204
 

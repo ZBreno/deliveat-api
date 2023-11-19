@@ -63,8 +63,8 @@ class Product(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True, unique=True)
 
     name: Mapped[str]
-    description: Mapped[Optional[str]] = mapped_column(nullable=True)
-    cost: Mapped[int]
+    description: Mapped[Optional[str]]
+    cost: Mapped[float]
     
     categories: Mapped[Optional[List['AssociationProductCategory']]] = relationship(back_populates="product",
                                                                                     cascade="all, delete")
@@ -81,6 +81,8 @@ class Product(Base):
 
     # orders: Mapped[List['AssociationProductOrder']] = relationship(back_populates="order",
     #                                                                       cascade="all, delete")
+    def __str__(self):
+        return self.name
 class ProductBonus(Base):
 
     __tablename__ = 'product_bonus'
@@ -89,13 +91,15 @@ class ProductBonus(Base):
 
     name: Mapped[str]
     description: Mapped[Optional[str]]
-    cost: Mapped[int]
+    cost: Mapped[float]
 
     
     products: Mapped[List['AssociationProductBonus']] = relationship(
         back_populates='product',
         cascade="all, delete",
     )
+    def __str__(self):
+        return self.name
 class Category(Base):
     __tablename__ = 'category'
 
@@ -104,6 +108,8 @@ class Category(Base):
 
     products: Mapped[List['AssociationProductCategory']] = relationship(back_populates="category",
                                                                         cascade="all, delete")
+    def __str__(self):
+        return self.name
 class Address(Base):
     __tablename__ = 'address'
 
@@ -119,6 +125,9 @@ class Address(Base):
     user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
 
     user: Mapped["User"] = relationship(back_populates="addresses")
+
+    def __str__(self):
+        return f"{self.city} - {self.district} / {self.street}"
 class Ticket(Base):
     __tablename__ = 'ticket'
 
@@ -128,6 +137,9 @@ class Ticket(Base):
     code: Mapped[str] = mapped_column(unique=True)
     description: Mapped[Optional[str]]
     type: Mapped[str]
+
+    def __str__(self):
+        return self.code
 class User(Base):
     __tablename__ = 'user'
 
@@ -144,6 +156,9 @@ class User(Base):
     role: Mapped[str]
 
     addresses: Mapped[List['Address']] = relationship(back_populates='user')
+
+    def __str__(self):
+        return self.name
 class Rating(Base):
     __tablename__ = 'rating'
 
@@ -153,6 +168,9 @@ class Rating(Base):
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
     order_id: Mapped[UUID] = mapped_column(ForeignKey('user.id'))
+
+    def __str__(self):
+        return f"{self.user_id} - {self.order_id} / {self.rating}"
 class Order(Base):
     __tablename__ = 'order'
 
@@ -168,3 +186,6 @@ class Order(Base):
 
     products: Mapped[List['AssociationProductOrder']] = relationship(back_populates="product",
                                                                      cascade="all, delete")
+
+    def __str__(self):
+        return f"{self.user_id} / {self.total}"
