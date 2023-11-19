@@ -1,8 +1,7 @@
 from typing import Dict, Any, List
-from sqlalchemy.orm import Session
-from domain.data.sqlalchemy_models import Product, Category
+from sqlalchemy.orm import Session, joinedload
+from domain.data.sqlalchemy_models import Product, Category, AssociationProductCategory
 from uuid import UUID
-from fastapi.encoders import jsonable_encoder
 
 
 class ProductRepository:

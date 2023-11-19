@@ -19,7 +19,7 @@ def sess_db():
 
 
 @router.post("/add")
-async def add_category(req: CategoryReq, sess: Session = Depends(sess_db)):
+def add_category(req: CategoryReq, sess: Session = Depends(sess_db)):
     repo: CategoryRepository = CategoryRepository(sess)
     category = req.model_dump()
     category['id'] = uuid4()
@@ -33,7 +33,7 @@ async def add_category(req: CategoryReq, sess: Session = Depends(sess_db)):
 
 
 @router.patch("/update/{id}")
-async def update_category(id: UUID, req: CategoryReq, sess: Session = Depends(sess_db)):
+def update_category(id: UUID, req: CategoryReq, sess: Session = Depends(sess_db)):
     
     category = req.model_dump(exclude_unset=True)
     repo: CategoryRepository = CategoryRepository(sess)
@@ -47,7 +47,7 @@ async def update_category(id: UUID, req: CategoryReq, sess: Session = Depends(se
 
 
 @router.delete("/delete/{id}")
-async def delete_category(id: UUID, sess: Session = Depends(sess_db)):
+def delete_category(id: UUID, sess: Session = Depends(sess_db)):
     repo: CategoryRepository = CategoryRepository(sess)
     result = repo.delete_category(id)
     
@@ -58,14 +58,14 @@ async def delete_category(id: UUID, sess: Session = Depends(sess_db)):
 
 
 @router.get("/list")
-async def list_category(sess: Session = Depends(sess_db)):
+def list_category(sess: Session = Depends(sess_db)):
     repo: CategoryRepository = CategoryRepository(sess)
     result = repo.get_all_category()
     return result
 
 
 @router.get("/get/{id}")
-async def get_category(id: UUID, sess: Session = Depends(sess_db)):
+def get_category(id: UUID, sess: Session = Depends(sess_db)):
     repo: CategoryRepository = CategoryRepository(sess)
     result = repo.get_category(id)
     return result

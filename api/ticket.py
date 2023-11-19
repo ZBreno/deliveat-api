@@ -19,7 +19,7 @@ def sess_db():
 
 
 @router.post("/add")
-async def add_ticket(req: TicketReq, sess: Session = Depends(sess_db)):
+def add_ticket(req: TicketReq, sess: Session = Depends(sess_db)):
     repo: TicketRepository = TicketRepository(sess)
     ticket = req.model_dump()
     ticket['id'] = uuid4()
@@ -33,7 +33,7 @@ async def add_ticket(req: TicketReq, sess: Session = Depends(sess_db)):
 
 
 @router.patch("/update/{id}")
-async def update_ticket(id: UUID, req: TicketReq, sess: Session = Depends(sess_db)):
+def update_ticket(id: UUID, req: TicketReq, sess: Session = Depends(sess_db)):
     
     ticket = req.model_dump(exclude_unset=True)
     repo: TicketRepository = TicketRepository(sess)
@@ -47,7 +47,7 @@ async def update_ticket(id: UUID, req: TicketReq, sess: Session = Depends(sess_d
 
 
 @router.delete("/delete/{id}")
-async def delete_ticket(id: UUID, sess: Session = Depends(sess_db)):
+def delete_ticket(id: UUID, sess: Session = Depends(sess_db)):
     repo: TicketRepository = TicketRepository(sess)
     result = repo.delete_ticket(id)
     
@@ -58,14 +58,14 @@ async def delete_ticket(id: UUID, sess: Session = Depends(sess_db)):
 
 
 @router.get("/list")
-async def list_ticket(sess: Session = Depends(sess_db)):
+def list_ticket(sess: Session = Depends(sess_db)):
     repo: TicketRepository = TicketRepository(sess)
     result = repo.get_all_ticket()
     return result
 
 
 @router.get("/get/{id}")
-async def get_ticket(id: UUID, sess: Session = Depends(sess_db)):
+def get_ticket(id: UUID, sess: Session = Depends(sess_db)):
     repo: TicketRepository = TicketRepository(sess)
     result = repo.get_ticket(id)
     return result

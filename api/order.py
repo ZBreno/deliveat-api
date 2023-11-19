@@ -19,7 +19,7 @@ def sess_db():
 
 
 @router.post("/add")
-async def add_order(req: OrderReq, sess: Session = Depends(sess_db)):
+def add_order(req: OrderReq, sess: Session = Depends(sess_db)):
     repo: OrderRepository = OrderRepository(sess)
     order = req.model_dump()
     order['id'] = uuid4()
@@ -33,7 +33,7 @@ async def add_order(req: OrderReq, sess: Session = Depends(sess_db)):
 
 
 @router.patch("/update/{id}")
-async def update_order(id: UUID, req: OrderReq, sess: Session = Depends(sess_db)):
+def update_order(id: UUID, req: OrderReq, sess: Session = Depends(sess_db)):
     
     order = req.model_dump(exclude_unset=True)
     repo: OrderRepository = OrderRepository(sess)
@@ -47,7 +47,7 @@ async def update_order(id: UUID, req: OrderReq, sess: Session = Depends(sess_db)
 
 
 @router.delete("/delete/{id}")
-async def delete_order(id: UUID, sess: Session = Depends(sess_db)):
+def delete_order(id: UUID, sess: Session = Depends(sess_db)):
     repo: OrderRepository = OrderRepository(sess)
     result = repo.delete_order(id)
     
@@ -58,14 +58,14 @@ async def delete_order(id: UUID, sess: Session = Depends(sess_db)):
 
 
 @router.get("/list")
-async def list_order(sess: Session = Depends(sess_db)):
+def list_order(sess: Session = Depends(sess_db)):
     repo: OrderRepository = OrderRepository(sess)
     result = repo.get_all_order()
     return result
 
 
 @router.get("/get/{id}")
-async def get_order(id: UUID, sess: Session = Depends(sess_db)):
+def get_order(id: UUID, sess: Session = Depends(sess_db)):
     repo: OrderRepository = OrderRepository(sess)
     result = repo.get_order(id)
     return result

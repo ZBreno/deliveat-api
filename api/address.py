@@ -20,9 +20,8 @@ def sess_db():
 
 
 @router.post("/add")
-async def add_address(req: AddressReq, sess: Session = Depends(sess_db)):
+def add_address(req: AddressReq, sess: Session = Depends(sess_db)):
     user = sess.query(User).order_by(User.id.desc()).first()
-
     repo: AddressRepository = AddressRepository(sess)
     address = req.model_dump()
     address['id'] = uuid4()
@@ -37,7 +36,7 @@ async def add_address(req: AddressReq, sess: Session = Depends(sess_db)):
 
 
 @router.patch("/update/{id}")
-async def update_address(id: UUID, req: AddressReq, sess: Session = Depends(sess_db)):
+def update_address(id: UUID, req: AddressReq, sess: Session = Depends(sess_db)):
     
     address = req.model_dump(exclude_unset=True)
     repo: AddressRepository = AddressRepository(sess)
@@ -51,7 +50,7 @@ async def update_address(id: UUID, req: AddressReq, sess: Session = Depends(sess
 
 
 @router.delete("/delete/{id}")
-async def delete_address(id: UUID, sess: Session = Depends(sess_db)):
+def delete_address(id: UUID, sess: Session = Depends(sess_db)):
     repo: AddressRepository = AddressRepository(sess)
     result = repo.delete_address(id)
     
@@ -62,14 +61,14 @@ async def delete_address(id: UUID, sess: Session = Depends(sess_db)):
 
 
 @router.get("/list")
-async def list_address(sess: Session = Depends(sess_db)):
+def list_address(sess: Session = Depends(sess_db)):
     repo: AddressRepository = AddressRepository(sess)
     result = repo.get_all_address()
     return result
 
 
 @router.get("/get/{id}")
-async def get_address(id: UUID, sess: Session = Depends(sess_db)):
+def get_address(id: UUID, sess: Session = Depends(sess_db)):
     repo: AddressRepository = AddressRepository(sess)
     result = repo.get_address(id)
     return result
