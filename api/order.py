@@ -6,6 +6,8 @@ from db_config.sqlalchemy_connect import SessionFactory
 from domain.request.order import OrderReq 
 from repository.sqlalchemy.order import OrderRepository
 from uuid import UUID, uuid4
+from utils.generate_code import generate_code
+from domain.data.sqlalchemy_models import User, Address
 
 router = APIRouter(prefix='/order', tags=['Order'])
 
@@ -17,13 +19,18 @@ def sess_db():
     finally:
         db.close()
 
-
 @router.post("/add")
 def add_order(req: OrderReq, sess: Session = Depends(sess_db)):
     repo: OrderRepository = OrderRepository(sess)
+    user = sess.query(User).first()
+    address = sess.query(Address).first()
     order = req.model_dump()
     order['id'] = uuid4()
-    
+    order['code'] = generate_code()
+    order['user_id'] = user.id
+    order['store_id'] = user.id
+    order['address_id'] = address.id
+    print(order['user_id'])
     result = repo.insert_order(order)
     
     if result:
@@ -57,8 +64,10 @@ def delete_order(id: UUID, sess: Session = Depends(sess_db)):
         return JSONResponse(content={'message': 'delete order error'}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.get("/list")
-def list_order(sess: Session = Depends(sess_db)):
+@router.get("/list", )
+def list_order(sess: Session = Depends(sess_db), q: str | None = None):
+    if q:
+        print(q)
     repo: OrderRepository = OrderRepository(sess)
     result = repo.get_all_order()
     return result
