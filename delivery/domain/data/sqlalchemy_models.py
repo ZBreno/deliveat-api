@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 from typing import List, Optional
 from domain.data.enums.week import DayOfWeek
+from domain.data.enums.status_order import StatusChoices
 
 
 class Base(DeclarativeBase):
@@ -179,7 +180,9 @@ class Order(Base):
     observation: Mapped[Optional[str]]
     payment_method: Mapped[str]
     code: Mapped[str]
-
+    status: Mapped[StatusChoices] = mapped_column(
+        Enum(StatusChoices)
+    )
     address_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('address.id'))
     user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
     store_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))

@@ -8,7 +8,6 @@ from repository.sqlalchemy.order import OrderRepository
 from uuid import UUID, uuid4
 from utils.generate_code import generate_code
 from domain.data.sqlalchemy_models import User, Address
-
 router = APIRouter(prefix='/order', tags=['Order'])
 
 
@@ -64,10 +63,10 @@ def delete_order(id: UUID, sess: Session = Depends(sess_db)):
         return JSONResponse(content={'message': 'delete order error'}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@router.get("/list", )
-def list_order(sess: Session = Depends(sess_db), q: str | None = None):
-    if q:
-        print(q)
+@router.get("/list")
+def list_order(sess: Session = Depends(sess_db), Q: str | None = None):
+    if Q:
+        print(Q)
     repo: OrderRepository = OrderRepository(sess)
     result = repo.get_all_order()
     return result

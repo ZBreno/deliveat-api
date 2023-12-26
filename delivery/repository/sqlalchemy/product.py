@@ -20,9 +20,7 @@ class ProductRepository:
             )
 
             if "categories" in product:
-                for category_data in product["categories"]:
-
-                    category_id = category_data["id"]
+                for category_id in product["categories"]:
 
                     existing_category = self.sess.query(
                         Category).filter_by(id=category_id).first()
@@ -39,10 +37,8 @@ class ProductRepository:
 
             if "products_bonus" in product:
 
-                for product_bonus_data in product["products_bonus"]:
+                for product_bonus_id in product["products_bonus"]:
 
-                    product_bonus_id = product_bonus_data["id"]
-                    print(product_bonus_id)
                     existing_product_bonus = self.sess.query(
                         ProductBonus).filter_by(id=product_bonus_id).first()
 
