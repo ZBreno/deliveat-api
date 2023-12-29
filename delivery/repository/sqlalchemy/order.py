@@ -1,8 +1,11 @@
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Union
 from sqlalchemy.orm import Session, joinedload, load_only
 from domain.data.sqlalchemy_models import Order, Product, AssociationProductOrder, AssociationProductCategory, AssociationProductBonus
 from uuid import UUID, uuid4
 from domain.response.order import OrderResponse
+from datetime import datetime, timedelta
+from sqlalchemy import func, select
+import locale
 
 
 class OrderRepository:
@@ -21,7 +24,8 @@ class OrderRepository:
                 code=order["code"],
                 payment_method=order["payment_method"],
                 user_id=order['user_id'],
-                status=order['status']
+                status=order['status'],
+                created_at=order["created_at"],
             )
 
             if "products" in order:
@@ -62,26 +66,104 @@ class OrderRepository:
             return False
         return True
 
-    def get_all_order(self) -> List[Order]:
-        orders = (
+    def get_all_order(self, status: str | None, code: str | None, user_id: UUID) -> List[Order]:
+        orders_query = (
             self.sess.query(Order)
             .options(
                 joinedload(Order.products)
                 .joinedload(AssociationProductOrder.product)
-                .joinedload(Product.categories)
-
-            )
-            .options(
+                .joinedload(Product.categories),
                 joinedload(Order.products)
                 .joinedload(AssociationProductOrder.product)
                 .joinedload(Product.products_bonus)
             )
-            .all()
-
-
+            .filter(Order.store_id == user_id)
         )
+
+        if status:
+            orders_query = orders_query.filter(Order.status == status)
+
+        if code:
+            orders_query = orders_query.filter(Order.code == code)
+
+        orders = orders_query.all()
 
         return orders
 
     def get_order(self, id: UUID) -> Order:
         return self.sess.query(Order).filter(Order.id == id).one_or_none()
+
+    def get_amount(self, user_id: UUID) -> List[Dict[str, Union[str, float]]]:
+        locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+
+        today = datetime.now().date()
+        yesterday = today - timedelta(days=1)
+
+        all_days = [yesterday + timedelta(days=i)
+                    for i in range((today - yesterday).days + 1)]
+
+        orders = (
+            self.sess.query(func.date_trunc('day', Order.created_at).label('day'),
+                            func.sum(Order.total).label('total'))
+            .filter(Order.store_id == user_id, Order.created_at >= yesterday, Order.created_at < today)
+            .group_by('day')
+            .all()
+        )
+
+        day_totals = {order.day.date(): order.total for order in orders}
+
+        result = [{'date': day.strftime('%d-%m-%Y'),
+                   'day': day.strftime('%A').encode('latin-1').decode('utf-8'),
+                   'total': day_totals.get(day, 0)} for day in all_days]
+
+        locale.setlocale(locale.LC_TIME, '')
+
+        return result
+
+    def get_amount_last_week(self, user_id: UUID):
+        locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+
+        today = datetime.now().date()
+        last_week_start = today - timedelta(days=6)
+
+        all_days = [last_week_start + timedelta(days=i) for i in range(7)]
+
+        last_week_orders = (
+            self.sess.query(func.date_trunc('day', Order.created_at).label('day'),
+                            func.sum(Order.total).label('total'))
+            .filter(Order.store_id == user_id, Order.created_at >= last_week_start)
+            .group_by('day')
+            .all()
+        )
+
+        day_totals = {
+            order.day.date(): order.total for order in last_week_orders}
+
+        result_last_week = [{'date': day.strftime('%d-%m-%Y'),
+                             'day': day.strftime('%A').encode('latin-1').decode('utf-8'),
+                             'total': day_totals.get(day, 0)} for day in all_days]
+
+        locale.setlocale(locale.LC_TIME, '')
+
+        return result_last_week
+
+    def get_count_orders(self, user_id: UUID) -> List[Dict[str, Union[str, float]]]:
+        locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+
+        today = datetime.now().date()
+        yesterday = today - timedelta(days=1)
+
+        today_orders = self.sess.query(Order).filter(
+            Order.store_id == user_id, Order.created_at >= today).count()
+        yesterday_orders = self.sess.query(Order).filter(
+            Order.store_id == user_id, Order.created_at >= yesterday, Order.created_at < today).count()
+        print(today_orders, yesterday_orders)
+
+        result_today = [{'date': today.strftime(
+            '%d-%m-%Y'), 'day': today.strftime('%A'), 'total': today_orders}]
+        result_yesterday = [{'date': yesterday.strftime(
+            '%d-%m-%Y'), 'day': yesterday.strftime('%A'), 'total': yesterday_orders}]
+
+        locale.setlocale(locale.LC_TIME, '')
+
+        return result_yesterday + result_today

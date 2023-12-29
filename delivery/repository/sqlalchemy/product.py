@@ -76,31 +76,20 @@ class ProductRepository:
             return False
         return True
 
-    def get_all_product(self) -> List[Product]:
-        products = (
+    def get_all_product(self, category: str | None) -> List[Product]:
+        products_query = (
             self.sess.query(Product)
             .options(
                 joinedload(Product.categories)
                 .joinedload(AssociationProductCategory.category)
                 .load_only(Category.name)
             )
-            .all()
         )
+        
+        if category:
+            products_query = products_query.filter(Category.name == category)
 
-        # Ajuste para retornar apenas o atributo "category"
-        result = [
-            {
-                "id": product.id,
-                "name": product.name,
-                "cost": product.cost,
-                "description": product.description,
-                "categories": [{"id": category.category.id, "name": category.category.name} for category in product.categories],
-                "products_bonus": [{"id": product_bonus.product_bonus.id, "name": product_bonus.product_bonus.name, "cost": product_bonus.product_bonus.id, "description": product_bonus.product_bonus.id} for product_bonus in product.products_bonus],
-            }
-            for product in products
-        ]
-
-        return result
+        return products_query.all()
 
     def get_product(self, id: UUID) -> Product:
         product = self.sess.query(Product).options(
@@ -109,15 +98,4 @@ class ProductRepository:
             .load_only(Category.name)
         ).filter(Product.id == id).one_or_none()
 
-        result = [
-            {
-                "id": product.id,
-                "name": product.name,
-                "cost": product.cost,
-                "description": product.description,
-                "categories": [{"id": category.category.id, "name": category.category.name} for category in product.categories],
-                "products_bonus": [{"id": product_bonus.product_bonus.id, "name": product_bonus.product_bonus.name, "cost": product_bonus.product_bonus.id, "description": product_bonus.product_bonus.id} for product_bonus in product.products_bonus],
-            }
-        ]
-
-        return result
+        return product

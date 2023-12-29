@@ -6,7 +6,7 @@ from db_config.sqlalchemy_connect import SessionFactory
 from domain.request.ticket import TicketReq
 from repository.sqlalchemy.ticket import TicketRepository
 from uuid import UUID, uuid4
-
+from datetime import datetime
 router = APIRouter(prefix='/ticket', tags=['Ticket'])
 
 
@@ -23,6 +23,7 @@ def add_ticket(req: TicketReq, sess: Session = Depends(sess_db)):
     repo: TicketRepository = TicketRepository(sess)
     ticket = req.model_dump()
     ticket['id'] = uuid4()
+    ticket['created_at'] = datetime.now().date()
     
     result = repo.insert_ticket(ticket)
     
@@ -68,4 +69,10 @@ def list_ticket(sess: Session = Depends(sess_db)):
 def get_ticket(id: UUID, sess: Session = Depends(sess_db)):
     repo: TicketRepository = TicketRepository(sess)
     result = repo.get_ticket(id)
+    return result
+
+@router.get("/last_tickets")
+def get_ticket(sess: Session = Depends(sess_db)):
+    repo: TicketRepository = TicketRepository(sess)
+    result = repo.get_last_tickets()
     return result

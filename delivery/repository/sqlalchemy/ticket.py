@@ -2,7 +2,7 @@ from typing import Dict, Any, List
 from sqlalchemy.orm import Session
 from domain.data.sqlalchemy_models import Ticket
 from uuid import UUID
-
+from sqlalchemy import desc
 
 class TicketRepository:
 
@@ -16,7 +16,6 @@ class TicketRepository:
             self.sess.commit()
         except:
             return False
-        
         return True
 
     def update_ticket(self, id: UUID, details: Dict[str, Any]) -> bool:
@@ -42,3 +41,6 @@ class TicketRepository:
 
     def get_ticket(self, id: UUID) -> Ticket:
         return self.sess.query(Ticket).filter(Ticket.id == id).one_or_none()
+
+    def get_last_tickets(self):
+        return self.sess.query(Ticket).order_by(desc(Ticket.created_at)).limit(2).all()
