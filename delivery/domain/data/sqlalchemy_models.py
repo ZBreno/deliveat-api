@@ -137,7 +137,7 @@ class User(Base):
     whatsapp: Mapped[Optional[str]]
     instagram: Mapped[Optional[str]]
     role: Mapped[str]
-    is_activate: Mapped[bool]
+    # is_activate: Mapped[bool]
     isworking = relationship("Operation", back_populates='user_workings')
     addresses = relationship("Address", back_populates='user_addresses')
 
