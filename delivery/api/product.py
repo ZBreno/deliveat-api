@@ -58,9 +58,9 @@ def delete_product(id: UUID, sess: Session = Depends(sess_db)):
 
 
 @router.get("/list")
-def list_product(sess: Session = Depends(sess_db)):
+def list_product(sess: Session = Depends(sess_db), category: str | None = None):
     repo: ProductRepository = ProductRepository(sess)
-    result = repo.get_all_product()
+    result = repo.get_all_product(category=category)
     return result
 
 

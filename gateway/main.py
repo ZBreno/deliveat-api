@@ -6,8 +6,7 @@ from loguru import logger
 from uuid import uuid4
 
 app = FastAPI()
-app.include_router(deliveat.router,
-                   dependencies=[Depends(call_api_gateway)])
+app.include_router(deliveat.router,dependencies=[Depends(call_api_gateway)])
 logger.add("info.log", format="Log: [{extra[log_id]}: {time} - {level} - {message} ", level="INFO", enqueue=True)
 
 @app.middleware("http")

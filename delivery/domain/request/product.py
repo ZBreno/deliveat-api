@@ -11,8 +11,8 @@ class ProductReq(BaseModel):
     name: str
     description: Optional[str] = None
     cost: float
-    categories: Optional[List[CategoryAssociationReq]]
-    products_bonus: Optional[List[ProductBonusAssociationReq]]
+    categories: Optional[List[UUID]] = []
+    products_bonus: Optional[List[UUID]] = []
 
     class Config:
         from_attributes = True

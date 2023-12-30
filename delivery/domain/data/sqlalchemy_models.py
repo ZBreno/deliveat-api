@@ -1,10 +1,10 @@
-from datetime import date, time
-from sqlalchemy import ForeignKey, Enum
+from datetime import time, datetime
+from sqlalchemy import ForeignKey, Enum, DateTime
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import UUID
 from typing import List, Optional
 from domain.data.enums.week import DayOfWeek
-
+from domain.data.enums.status_order import StatusChoices
 
 class Base(DeclarativeBase):
     pass
@@ -114,7 +114,8 @@ class Ticket(Base):
     __tablename__ = 'ticket'
 
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
-    deadline: Mapped[date]
+    deadline: Mapped[datetime] = mapped_column(DateTime)
+    created_at: Mapped[datetime] = mapped_column(DateTime)
     code: Mapped[str]
     description: Mapped[Optional[str]]
     type: Mapped[str]
@@ -128,7 +129,7 @@ class User(Base):
 
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     name: Mapped[str]
-    birthdate: Mapped[date]
+    birthdate: Mapped[datetime]
     document: Mapped[str]
     phone: Mapped[Optional[str]]
     email: Mapped[str]
@@ -136,6 +137,7 @@ class User(Base):
     whatsapp: Mapped[Optional[str]]
     instagram: Mapped[Optional[str]]
     role: Mapped[str]
+    # is_activate: Mapped[bool]
     isworking = relationship("Operation", back_populates='user_workings')
     addresses = relationship("Address", back_populates='user_addresses')
 
@@ -179,13 +181,16 @@ class Order(Base):
     observation: Mapped[Optional[str]]
     payment_method: Mapped[str]
     code: Mapped[str]
-
+    status: Mapped[StatusChoices] = mapped_column(
+        Enum(StatusChoices)
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime)
+    
     address_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('address.id'))
     user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
     store_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
 
     products = relationship("AssociationProductOrder",
                             back_populates="order", cascade="all, delete")
-
     def __str__(self):
         return f"{self.user_id} / {self.total}"

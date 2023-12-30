@@ -14,7 +14,7 @@ class ProductBonusAssociationReq(BaseModel):
     id: UUID
     name: str
     description: Optional[str] = None
-    cost: float    
+    cost: float
     
     class Config:
         from_attributes = True
