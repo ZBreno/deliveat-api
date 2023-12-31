@@ -5,6 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from typing import List, Optional
 from domain.data.enums.week import DayOfWeek
 from domain.data.enums.status_order import StatusChoices
+from domain.data.enums.role import RoleChoice
 
 class Base(DeclarativeBase):
     pass
@@ -136,7 +137,9 @@ class User(Base):
     password: Mapped[str]
     whatsapp: Mapped[Optional[str]]
     instagram: Mapped[Optional[str]]
-    role: Mapped[str]
+    role: Mapped[RoleChoice] = mapped_column(
+        Enum(RoleChoice)
+    )
     # is_activate: Mapped[bool]
     isworking = relationship("Operation", back_populates='user_workings')
     addresses = relationship("Address", back_populates='user_addresses')
@@ -165,6 +168,7 @@ class Rating(Base):
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     rating: Mapped[int]
     description: Mapped[Optional[str]]
+    created_at: Mapped[datetime] = mapped_column(DateTime)
 
     user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
     order_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('order.id'))

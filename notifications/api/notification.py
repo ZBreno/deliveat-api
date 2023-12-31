@@ -11,6 +11,7 @@ from fastapi import Query
 from domain.request.notification import NotificationReq
 from uuid import UUID, uuid4
 from twilio.rest import Client
+import os
 
 router = APIRouter(prefix='/notification', tags=['notification'])
 
@@ -21,12 +22,12 @@ def sess_db():
     finally:
         db.close()
 
-TWILIO_ACCOUNT_SID = 'AC4d8334617c0169fe52f792908aa3e995'
-TWILIO_AUTH_TOKEN = '34cda7a2fe4599a56457a414da2c8a72'
-TWILIO_PHONE_NUMBER = 'whatsapp:+14155238886'
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID', 'AC4d8334617c0169fe52f792908aa3e995')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN', '34cda7a2fe4599a56457a414da2c8a72')
+TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER', 'whatsapp:+14155238886')
 
-EMAIL_SENDER = 'ze.neto429@gmail.com'
-EMAIL_PASSWORD = 'qedc foli orru qxvl'
+EMAIL_SENDER = os.getenv('EMAIL_SENDER', 'ze.neto429@gmail.com')
+EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD', 'qedc foli orru qxvl')
 
 @router.post("/add")
 def add_notification(req: NotificationReq, sess: Session = Depends(sess_db)):

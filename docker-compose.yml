@@ -1,0 +1,75 @@
+version: "3"
+
+services:
+
+  gateway:
+    container_name: gateway
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - production
+
+  back:
+    container_name: delivery
+    build:
+      context: ./delivery
+      dockerfile: Dockerfile
+    ports:
+      - 8001:8001
+    depends_on:
+      - postgres
+      - gateway
+    networks:
+      - production
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=deliveat
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - SECRET_KEY=EU
+      - ACCESS_TOKEN_EXPIRE_MINUTES=30
+      - ALGORITHM=HS256
+      - TWILIO_ACCOUNT_SID=AC4d8334617c0169fe52f792908aa3e995
+      - TWILIO_AUTH_TOKEN=34cda7a2fe4599a56457a414da2c8a72
+      - TWILIO_PHONE_NUMBER=whatsapp:+14155238886
+      - EMAIL_SENDER=ze.neto429@gmail.com
+      - EMAIL_PASSWORD=qedc foli orru qxvl
+      - POSTGRES_URL=postgresql://postgres:123@postgres:5432/deliveat
+
+  notifications:
+    container_name: notifications
+    build:
+      context: ./notifications
+      dockerfile: Dockerfile
+    ports:
+      - 8002:8002
+    depends_on:
+      - postgres
+      - back
+    networks:
+      - production
+
+  postgres:
+    container_name: postgres
+    image: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=deliveat
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+    networks:
+      - production
+    ports:
+      - 5433:5432
+
+volumes:
+  postgres_data:
+networks:
+  production:
