@@ -3,9 +3,11 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
-from domain.request.user import UserReq 
+from domain.request.user import UserReq
+from domain.data.sqlalchemy_models import User
 from repository.sqlalchemy.user import UserRepository
-from uuid import UUID, uuid4
+from uuid import UUID
+from security.secure import get_current_user
 
 router = APIRouter(prefix='/user', tags=['User'])
 
@@ -16,21 +18,6 @@ def sess_db():
         yield db
     finally:
         db.close()
-
-
-@router.post("/add")
-def add_user(req: UserReq, sess: Session = Depends(sess_db)):
-    repo: UserRepository = UserRepository(sess)
-    user = req.model_dump()
-    user['id'] = uuid4()
-    
-    result = repo.insert_user(user)
-    
-    if result:
-        return JSONResponse(content=jsonable_encoder(user), status_code=status.HTTP_201_CREATED)
-    else:
-        return JSONResponse(content={'message': 'create user problem encountered'}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 @router.patch("/update/{id}")
 def update_user(id: UUID, req: UserReq, sess: Session = Depends(sess_db)):
@@ -69,3 +56,14 @@ def get_user(id: UUID, sess: Session = Depends(sess_db)):
     repo: UserRepository = UserRepository(sess)
     result = repo.get_user(id)
     return result
+
+@router.get("/me")
+def read_current_user(current_user: str = Depends(get_current_user), sess: Session = Depends(sess_db)):
+    print(current_user)
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
+
+    if user:
+        return user
+    else:
+        return JSONResponse(content={'message': 'User not found'}, status_code=status.HTTP_404_NOT_FOUND)
