@@ -129,8 +129,8 @@ class User(Base):
 
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     name: Mapped[str]
-    birthdate: Mapped[datetime]
-    document: Mapped[str]
+    birthdate: Mapped[Optional[datetime]]
+    document: Mapped[Optional[str]]
     phone: Mapped[Optional[str]]
     email: Mapped[str]
     password: Mapped[str]
