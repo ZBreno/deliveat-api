@@ -1,18 +1,7 @@
 Endpoints (WEB)
-
-endpoint para retornar pedidos com filtros (pendents, acepts, ready, enviados, concluidos)
-
-endpoint para retornar pedidos com base no nome do produto (de acordo com os produtos do usuario)
-
-endpoint de get/id de orders tem que criar uma string aleatória para o pedido
-
-endpoint para retornar todo valor arrecado de ontem e hoje
-endpoint para retornar o total de pedidos recebidos de ontem e hoje
 endpoint para retornar o total de avaliações e a media de ontem e hoje
 endpoint para retornar todo valor arrecado na semana (total arrecadado, total de vendas, media das avaliações, total de avaliações) em cada dia
 enpoint para retornar as 4 avaliações com rating mais alto no dia
-endpoint para retornar quais itens foram mais vendidos na semana (quantidade e produto)
-enpoint para retornar os 2 cupons mais novos adicionados no sistema
 users/me quantidade de avaliações (geral) e quantos pedidos estão no status de concluído
 endpoint para retornar proddutos por categorias que a empresa criou (com paginação)
 

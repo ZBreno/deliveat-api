@@ -87,7 +87,7 @@ def get_total_yesterday_and_today(sess: Session = Depends(sess_db)):
     result = repo.get_amount(user.id)
     return result
 
-@router.get("/amount/last_week")
+@router.get("/last_week")
 def get_total_last_week(sess: Session = Depends(sess_db)):
     repo: OrderRepository = OrderRepository(sess)
     user = sess.query(User).first()

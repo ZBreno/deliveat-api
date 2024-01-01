@@ -6,6 +6,8 @@ from typing import List, Optional
 from domain.data.enums.week import DayOfWeek
 from domain.data.enums.status_order import StatusChoices
 from fastapi import UploadFile
+from domain.data.enums.role import RoleChoice
+
 
 class Base(DeclarativeBase):
     pass
@@ -117,6 +119,7 @@ class Address(Base):
 class Ticket(Base):
     __tablename__ = 'ticket'
 
+    title: Mapped[str]
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     deadline: Mapped[datetime] = mapped_column(DateTime)
     created_at: Mapped[datetime] = mapped_column(DateTime)
@@ -138,10 +141,12 @@ class User(Base):
     phone: Mapped[Optional[str]]
     email: Mapped[str]
     password: Mapped[str]
-    whatsapp: Mapped[Optional[str]]
     instagram: Mapped[Optional[str]]
     profile_picture: Mapped[Optional[str]]
-    role: Mapped[str]
+    role: Mapped[RoleChoice] = mapped_column(
+        Enum(RoleChoice)
+    )
+
     # is_activate: Mapped[bool]
     isworking = relationship("Operation", back_populates='user_workings')
     addresses = relationship("Address", back_populates='user_addresses')
@@ -152,7 +157,7 @@ class User(Base):
 
 class Operation(Base):
     __tablename__ = 'operations'
-    
+
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     timeout: Mapped[time]
     timein: Mapped[time]
@@ -170,6 +175,7 @@ class Rating(Base):
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     rating: Mapped[int]
     description: Mapped[Optional[str]]
+    created_at: Mapped[datetime] = mapped_column(DateTime)
 
     user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
     order_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('order.id'))
@@ -190,12 +196,13 @@ class Order(Base):
         Enum(StatusChoices)
     )
     created_at: Mapped[datetime] = mapped_column(DateTime)
-    
+
     address_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('address.id'))
     user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
     store_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
 
     products = relationship("AssociationProductOrder",
                             back_populates="order", cascade="all, delete")
+
     def __str__(self):
         return f"{self.user_id} / {self.total}"

@@ -18,6 +18,7 @@ def sess_db():
     finally:
         db.close()
 
+
 @router.patch("/update/{id}")
 def update_user(id: UUID,req: UpdateUserReq = Depends(),profile_picture: UploadFile = File(default=None),sess: Session = Depends(sess_db)):
     user_data = req.model_dump(exclude_unset=True)
@@ -42,7 +43,7 @@ def update_user(id: UUID,req: UpdateUserReq = Depends(),profile_picture: UploadF
 def delete_user(id: UUID, sess: Session = Depends(sess_db)):
     repo: UserRepository = UserRepository(sess)
     result = repo.delete_user(id)
-    
+
     if result:
         return JSONResponse(content={'message': 'user deleted successfully'}, status_code=status.HTTP_204_NO_CONTENT)
     else:
@@ -62,6 +63,7 @@ def get_user(id: UUID, sess: Session = Depends(sess_db)):
     result = repo.get_user(id)
     return result
 
+
 @router.get("/me")
 def read_current_user(current_user: str = Depends(get_current_user), sess: Session = Depends(sess_db)):
     repo: UserRepository = UserRepository(sess)
@@ -71,3 +73,10 @@ def read_current_user(current_user: str = Depends(get_current_user), sess: Sessi
         return user
     else:
         return JSONResponse(content={'message': 'User not found'}, status_code=status.HTTP_404_NOT_FOUND)
+
+
+@router.get('/stories')
+def get_users_store(sess: Session = Depends(sess_db)):
+    repo: UserRepository = UserRepository(sess)
+    result = repo.get_stories()
+    return result

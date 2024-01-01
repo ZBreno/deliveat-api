@@ -23,6 +23,7 @@ def add_rating(req: RatingReq, sess: Session = Depends(sess_db)):
     repo: RatingRepository = RatingRepository(sess)
     rating = req.model_dump()
     rating['id'] = uuid4()
+    rating['created_at'] = datetime.now()
     
     result = repo.insert_rating(rating)
     
