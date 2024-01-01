@@ -2,6 +2,7 @@ from fastapi import FastAPI, Depends
 from api import user, ticket, address, category, order, product, rating, product_bonus, login
 from security.secure import get_current_user
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 
@@ -22,4 +23,5 @@ app.include_router(product.router,dependencies=[Depends(get_current_user)])
 app.include_router(user.router,dependencies=[Depends(get_current_user)])
 app.include_router(product_bonus.router,dependencies=[Depends(get_current_user)])
 app.include_router(login.router)
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
