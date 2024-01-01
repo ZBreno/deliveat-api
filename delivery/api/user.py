@@ -1,6 +1,9 @@
-from fastapi import APIRouter, Depends, status, UploadFile, File
+from fastapi import APIRouter, Depends, status, UploadFile, File, Form
+import os
 from fastapi.responses import JSONResponse
+from datetime import date
 from fastapi.encoders import jsonable_encoder
+from typing import Optional
 from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
 from domain.request.user import UserReq, UpdateUserReq
@@ -20,23 +23,48 @@ def sess_db():
 
 
 @router.patch("/update/{id}")
-def update_user(id: UUID,req: UpdateUserReq = Depends(),profile_picture: UploadFile = File(default=None),sess: Session = Depends(sess_db)):
-    user_data = req.model_dump(exclude_unset=True)
-
+def update_user(
+    id: UUID,
+    name: Optional[str] = Form(None),
+    birthdate: Optional[date] = Form(None),
+    document: Optional[str] = Form(None),
+    phone: Optional[str] = Form(None),
+    email: Optional[str] = Form(None),
+    password: Optional[str] = Form(None),
+    instagram: Optional[str] = Form(None),
+    role: Optional[str] = Form(None),
+    profile_picture: UploadFile = File(None),
+    sess: Session = Depends(sess_db)
+):
     repo: UserRepository = UserRepository(sess)
-    result = repo.update_user(id, user_data)
-
     existing_user = repo.get_user(id)
+
     if profile_picture:
-        file_location = f"uploads/{profile_picture.filename}"
+        file_location = f"static/uploads/{profile_picture.filename}"
+        os.makedirs(os.path.dirname(file_location), exist_ok=True)
         with open(file_location, "wb") as file_object:
             file_object.write(profile_picture.file.read())
         existing_user.profile_picture = file_location
 
+    user_data = {
+        "name": name or existing_user.name,
+        "birthdate": birthdate or existing_user.birthdate,
+        "document": document or existing_user.document,
+        "phone": phone or existing_user.phone,
+        "email": email or existing_user.email,
+        "password": password or existing_user.password,
+        "instagram": instagram or existing_user.instagram,
+        "role": role or existing_user.role,
+        "profile_picture": existing_user.profile_picture
+    }
+
+    result = repo.update_user(id, user_data)
+
     if result:
-        return JSONResponse(content=jsonable_encoder(existing_user), status_code=status.HTTP_200_OK)
+        print(existing_user.name)
+        return JSONResponse(content=jsonable_encoder(existing_user), status_code=200)
     else:
-        return JSONResponse(content={'message': 'Erro ao atualizar usuário'}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JSONResponse(content={'message': 'update user error'}, status_code=500)
 
 
 @router.delete("/delete/{id}")
