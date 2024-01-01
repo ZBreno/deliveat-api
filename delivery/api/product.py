@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Form, File, UploadFile
+import os
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
@@ -6,6 +7,7 @@ from db_config.sqlalchemy_connect import SessionFactory
 from domain.request.product import ProductReq
 from repository.sqlalchemy.product import ProductRepository
 from uuid import UUID, uuid4
+from typing import List
 
 router = APIRouter(prefix='/product', tags=['Product'])
 
@@ -19,15 +21,36 @@ def sess_db():
 
 
 @router.post("/add")
-def add_product(req: ProductReq, sess: Session = Depends(sess_db)):
+def add_product(
+    name: str = Form(...),
+    description: str = Form(...),
+    cost: float = Form(...),
+    image: UploadFile = File(...),
+    categories: List[str] = Form(...),
+    products_bonus: List[str] = Form(default=[]),  
+    sess: Session = Depends(sess_db)
+):
     repo: ProductRepository = ProductRepository(sess)
-    product = jsonable_encoder(req)
-    product['id'] = uuid4()
+    
+    file_location = f"static/uploads/{image.filename}"
+    os.makedirs(os.path.dirname(file_location), exist_ok=True)
+    with open(file_location, "wb") as file_object:
+        file_object.write(image.file.read())
 
-    result = repo.insert_product(product)
+    product_data = {
+        "id": uuid4(),
+        "name": name,
+        "description": description,
+        "cost": cost,
+        "image": file_location,
+        "categories": categories,
+        "products_bonus": products_bonus
+    }
+
+    result = repo.insert_product(product_data)
 
     if result:
-        return JSONResponse(content=jsonable_encoder(product), status_code=status.HTTP_201_CREATED)
+        return JSONResponse(content=jsonable_encoder(product_data), status_code=status.HTTP_201_CREATED)
     else:
         return JSONResponse(content={'message': 'create product problem encountered'}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

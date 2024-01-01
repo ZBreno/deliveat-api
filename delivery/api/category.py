@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Form, File, UploadFile
+import os
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
@@ -19,15 +20,28 @@ def sess_db():
 
 
 @router.post("/add")
-def add_category(req: CategoryReq, sess: Session = Depends(sess_db)):
+def add_category(
+    name: str = Form(...),
+    image: UploadFile = File(...),
+    sess: Session = Depends(sess_db)
+):
     repo: CategoryRepository = CategoryRepository(sess)
-    category = req.model_dump()
-    category['id'] = uuid4()
     
-    result = repo.insert_category(category)
-    
+    file_location = f"static/categories/{image.filename}"
+    os.makedirs(os.path.dirname(file_location), exist_ok=True)
+    with open(file_location, "wb") as file_object:
+        file_object.write(image.file.read())
+
+    category_data = {
+        "id": uuid4(),
+        "name": name,
+        "image": file_location
+    }
+
+    result = repo.insert_category(category_data)
+
     if result:
-        return JSONResponse(content=jsonable_encoder(category), status_code=status.HTTP_201_CREATED)
+        return JSONResponse(content=jsonable_encoder(category_data), status_code=status.HTTP_201_CREATED)
     else:
         return JSONResponse(content={'message': 'create category problem encountered'}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

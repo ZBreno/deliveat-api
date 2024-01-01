@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Form, File, UploadFile
+import os
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
@@ -19,15 +20,32 @@ def sess_db():
 
 
 @router.post("/add")
-def add_product_bonus(req: ProductBonusReq, sess: Session = Depends(sess_db)):
+def add_product_bonus(
+    name: str = Form(...),
+    description: str = Form(...),
+    cost: float = Form(...),
+    image: UploadFile = File(...),
+    sess: Session = Depends(sess_db)
+):
     repo: ProductBonusRepository = ProductBonusRepository(sess)
-    product_bonus = req.model_dump()
-    product_bonus['id'] = uuid4()
-    
-    result = repo.insert_product_bonus(product_bonus)
-    
+
+    file_location = f"static/uploads/{image.filename}"
+    os.makedirs(os.path.dirname(file_location), exist_ok=True)
+    with open(file_location, "wb") as file_object:
+        file_object.write(image.file.read())
+
+    product_bonus_data = {
+        "id": uuid4(),
+        "name": name,
+        "description": description,
+        "cost": cost,
+        "image": file_location
+    }
+
+    result = repo.insert_product_bonus(product_bonus_data)
+
     if result:
-        return JSONResponse(content=jsonable_encoder(product_bonus), status_code=status.HTTP_201_CREATED)
+        return JSONResponse(content=jsonable_encoder(product_bonus_data), status_code=status.HTTP_201_CREATED)
     else:
         return JSONResponse(content={'message': 'create product_bonus problem encountered'}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
