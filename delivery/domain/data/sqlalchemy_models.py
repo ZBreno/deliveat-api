@@ -7,6 +7,7 @@ from domain.data.enums.week import DayOfWeek
 from domain.data.enums.status_order import StatusChoices
 from domain.data.enums.role import RoleChoice
 
+
 class Base(DeclarativeBase):
     pass
 
@@ -135,7 +136,6 @@ class User(Base):
     phone: Mapped[Optional[str]]
     email: Mapped[str]
     password: Mapped[str]
-    whatsapp: Mapped[Optional[str]]
     instagram: Mapped[Optional[str]]
     role: Mapped[RoleChoice] = mapped_column(
         Enum(RoleChoice)
@@ -150,7 +150,7 @@ class User(Base):
 
 class Operation(Base):
     __tablename__ = 'operations'
-    
+
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     timeout: Mapped[time]
     timein: Mapped[time]
@@ -189,12 +189,13 @@ class Order(Base):
         Enum(StatusChoices)
     )
     created_at: Mapped[datetime] = mapped_column(DateTime)
-    
+
     address_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('address.id'))
     user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
     store_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
 
     products = relationship("AssociationProductOrder",
                             back_populates="order", cascade="all, delete")
+
     def __str__(self):
         return f"{self.user_id} / {self.total}"

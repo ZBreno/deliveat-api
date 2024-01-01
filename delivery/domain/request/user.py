@@ -2,6 +2,7 @@ from pydantic import BaseModel, validator
 from uuid import UUID
 from datetime import date
 from typing import Optional, List
+from domain.data.enums.role import RoleChoice
 
 class UserReq(BaseModel):
     name: str
@@ -12,7 +13,7 @@ class UserReq(BaseModel):
     password: str
     whatsapp: Optional[str] = None
     instagram: Optional[str] = None
-    role: str
+    role: RoleChoice
     class Config:
         from_attributes = True
 

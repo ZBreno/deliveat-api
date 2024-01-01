@@ -1,12 +1,7 @@
 Endpoints (WEB)
-
-
-
-
 endpoint para retornar o total de avaliações e a media de ontem e hoje
 endpoint para retornar todo valor arrecado na semana (total arrecadado, total de vendas, media das avaliações, total de avaliações) em cada dia
 enpoint para retornar as 4 avaliações com rating mais alto no dia
-enpoint para retornar os 2 cupons mais novos adicionados no sistema
 users/me quantidade de avaliações (geral) e quantos pedidos estão no status de concluído
 endpoint para retornar proddutos por categorias que a empresa criou (com paginação)
 
