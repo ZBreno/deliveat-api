@@ -41,6 +41,9 @@ class UserRepository:
 
     def get_user(self, id: UUID) -> User:
         return self.sess.query(User).filter(User.id == id).one_or_none()
-    
-    def get_user_me(self, email:str) -> User:
+
+    def get_user_me(self, email: str) -> User:
         return self.sess.query(User).filter(User.email == email).one_or_none()
+
+    def get_stories(self) -> List[User]:
+        return self.sess.query(User).filter(User.role == 'Store').all()

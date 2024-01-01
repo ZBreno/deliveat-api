@@ -11,7 +11,6 @@ class UserReq(BaseModel):
     phone: Optional[str] = None
     email: str
     password: str
-    whatsapp: Optional[str] = None
     instagram: Optional[str] = None
     role: RoleChoice
     class Config:

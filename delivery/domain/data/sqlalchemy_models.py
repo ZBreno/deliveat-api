@@ -115,6 +115,7 @@ class Address(Base):
 class Ticket(Base):
     __tablename__ = 'ticket'
 
+    title: Mapped[str]
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     deadline: Mapped[datetime] = mapped_column(DateTime)
     created_at: Mapped[datetime] = mapped_column(DateTime)
@@ -140,6 +141,7 @@ class User(Base):
     role: Mapped[RoleChoice] = mapped_column(
         Enum(RoleChoice)
     )
+
     # is_activate: Mapped[bool]
     isworking = relationship("Operation", back_populates='user_workings')
     addresses = relationship("Address", back_populates='user_addresses')

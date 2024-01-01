@@ -17,7 +17,6 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     phone = factory.Sequence(lambda n: str(uuid4()))
     email = factory.Sequence(lambda n: str(uuid4()))
     password = factory.Faker('password')
-    whatsapp = factory.Sequence(lambda n: str(uuid4()))
     instagram = factory.Sequence(lambda n: str(uuid4()))
     role = factory.Faker('random_element', elements=['company', 'client'])
     

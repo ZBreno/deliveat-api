@@ -62,4 +62,4 @@ def add_user(req: UserReq, sess: Session = Depends(sess_db)):
     if result:
         return JSONResponse(content=jsonable_encoder(user), status_code=status.HTTP_201_CREATED)
     else:
-        return JSONResponse(content={'message': 'create user problem encountered'}, status_code=status.HTTP_400_BAD_REQUEST)
+        return JSONResponse(content={'message': 'create user problem encountered'}, status_code=status.HTTP_403_FORBIDDEN)

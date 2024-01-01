@@ -8,9 +8,8 @@ class TicketReq(BaseModel):
     code: str
     description: Optional[str] = None
     type: str
+    title: str
     
     class Config:
         from_attributes = True
-    
-    
     
