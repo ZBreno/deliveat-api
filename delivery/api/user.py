@@ -1,10 +1,9 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, UploadFile, File
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
-from domain.request.user import UserReq
-from domain.data.sqlalchemy_models import User
+from domain.request.user import UserReq, UpdateUserReq
 from repository.sqlalchemy.user import UserRepository
 from uuid import UUID
 from security.secure import get_current_user
@@ -20,17 +19,23 @@ def sess_db():
         db.close()
 
 @router.patch("/update/{id}")
-def update_user(id: UUID, req: UserReq, sess: Session = Depends(sess_db)):
-    
-    user = req.model_dump(exclude_unset=True)
+def update_user(id: UUID,req: UpdateUserReq = Depends(),profile_picture: UploadFile = File(default=None),sess: Session = Depends(sess_db)):
+    user_data = req.model_dump(exclude_unset=True)
+
     repo: UserRepository = UserRepository(sess)
-    
-    result = repo.update_user(id, user)
-    
+    result = repo.update_user(id, user_data)
+
+    existing_user = repo.get_user(id)
+    if profile_picture:
+        file_location = f"uploads/{profile_picture.filename}"
+        with open(file_location, "wb") as file_object:
+            file_object.write(profile_picture.file.read())
+        existing_user.profile_picture = file_location
+
     if result:
-        return JSONResponse(content=jsonable_encoder(user), status_code=status.HTTP_200_OK)
+        return JSONResponse(content=jsonable_encoder(existing_user), status_code=status.HTTP_200_OK)
     else:
-        return JSONResponse(content={'message': 'update user error'}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return JSONResponse(content={'message': 'Erro ao atualizar usuário'}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @router.delete("/delete/{id}")
@@ -59,7 +64,6 @@ def get_user(id: UUID, sess: Session = Depends(sess_db)):
 
 @router.get("/me")
 def read_current_user(current_user: str = Depends(get_current_user), sess: Session = Depends(sess_db)):
-    print(current_user)
     repo: UserRepository = UserRepository(sess)
     user = repo.get_user_me(current_user)
 

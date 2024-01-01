@@ -1,8 +1,18 @@
 from fastapi import FastAPI, Depends
 from api import user, ticket, address, category, order, product, rating, product_bonus, login
 from security.secure import get_current_user
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permitir qualquer origem
+    allow_credentials=True,
+    allow_methods=["*"],  # Permitir qualquer método HTTP
+    allow_headers=["*"],  # Permitir qualquer cabeçalho
+)
+
 app.include_router(ticket.router,dependencies=[Depends(get_current_user)])
 app.include_router(rating.router,dependencies=[Depends(get_current_user)])
 app.include_router(address.router,dependencies=[Depends(get_current_user)])

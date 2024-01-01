@@ -5,6 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from typing import List, Optional
 from domain.data.enums.week import DayOfWeek
 from domain.data.enums.status_order import StatusChoices
+from fastapi import UploadFile
 
 class Base(DeclarativeBase):
     pass
@@ -51,6 +52,7 @@ class Product(Base):
     name: Mapped[str]
     description: Mapped[Optional[str]]
     cost: Mapped[float]
+    image: Mapped[Optional[str]]
 
     categories = relationship(
         "AssociationProductCategory", back_populates="product", cascade="all, delete")
@@ -70,6 +72,7 @@ class ProductBonus(Base):
     name: Mapped[str]
     description: Mapped[Optional[str]]
     cost: Mapped[float]
+    image: Mapped[Optional[str]]
 
     products = relationship("AssociationProductBonus",
                             back_populates="product_bonus", cascade="all, delete")
@@ -83,6 +86,7 @@ class Category(Base):
 
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     name: Mapped[str]
+    image: Mapped[Optional[str]]
 
     products = relationship("AssociationProductCategory",
                             back_populates="category", cascade="all, delete")
@@ -136,6 +140,7 @@ class User(Base):
     password: Mapped[str]
     whatsapp: Mapped[Optional[str]]
     instagram: Mapped[Optional[str]]
+    profile_picture: Mapped[Optional[str]]
     role: Mapped[str]
     # is_activate: Mapped[bool]
     isworking = relationship("Operation", back_populates='user_workings')
