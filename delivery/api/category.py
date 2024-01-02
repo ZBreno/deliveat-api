@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
 from domain.request.category import CategoryReq 
 from repository.sqlalchemy.category import CategoryRepository
+from security.secure import get_current_user
 from uuid import UUID, uuid4
 
 router = APIRouter(prefix='/category', tags=['Category'])

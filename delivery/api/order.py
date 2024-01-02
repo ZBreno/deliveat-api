@@ -5,14 +5,10 @@ from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
 from domain.request.order import OrderReq
 from repository.sqlalchemy.order import OrderRepository
-from repository.sqlalchemy.user import UserRepository
 from uuid import UUID, uuid4
 from utils.generate_code import generate_code
 from domain.data.sqlalchemy_models import User, Address
 from datetime import datetime, timedelta
-from security.secure import get_current_user
-
-
 router = APIRouter(prefix='/order', tags=['Order'])
 
 
@@ -68,20 +64,50 @@ def delete_order(id: UUID, sess: Session = Depends(sess_db)):
     else:
         return JSONResponse(content={'message': 'delete order error'}, status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 @router.get("/list")
 def list_order(sess: Session = Depends(sess_db), status: str | None = None, code: str | None = None):
     user = sess.query(User).first()
-    repo: OrderRepository = OrderRepository(session=sess)
-    result = repo.get_all_order(status=status, code=code, user_id=user.id)
+    repo: OrderRepository = OrderRepository(sess=sess)
+    orders = repo.get_all_order(status=status, code=code, user_id=user.id)
+    
+    result = []
+    for order in orders:
+        address = sess.query(Address).filter(Address.id == order.address_id).one_or_none()
+        user = sess.query(User).filter(User.id == order.user_id).one_or_none()
+        store = sess.query(User).filter(User.id == order.store_id).one_or_none()
+        
+        products = []
+        for product in order.products:
+            categories = []
 
-    return result
+            products.append({
+                "name" : product.product.name,
+                "description" : product.product.description,
+                "cost" : product.product.cost,
+                "image" : product.product.image
+            })
 
+        result.append({
+            "total" : order.total,
+		    "observation": order.observation,
+		    "code": order.code,
+		    "created_at": order.created_at,
+		    "user": user.name,
+		    "id": order.id,
+		    "payment_method": order.payment_method,
+		    "status": order.status,
+		    "store": store.name,
+		    "address": {
+                "street" : address.street,
+                "city" : address.city,
+                "bumber" : address.number,
+                "reference_point" : address.reference_point,
+                "district" : address.district,
+                "complemente" : address.complement
+            },
+            "products" : products
+        })
 
-@router.get("/get/{id}")
-def get_order(id: UUID, sess: Session = Depends(sess_db)):
-    repo: OrderRepository = OrderRepository(sess)
-    result = repo.get_order(id)
     return result
 
 @router.get("/amount")
@@ -96,15 +122,6 @@ def get_total_last_week(sess: Session = Depends(sess_db)):
     repo: OrderRepository = OrderRepository(sess)
     user = sess.query(User).first()
     result = repo.get_amount_last_week(user.id)
-    return result
-
-@router.get("/list/my_orders")
-def get_my_orders(sess: Session = Depends(sess_db), current_user: str = Depends(get_current_user)):
-    repo: UserRepository = UserRepository(sess)
-    user = repo.get_user_me(current_user)
-    
-    repo: OrderRepository = OrderRepository(sess)
-    result = repo.get_my_orders(user.id)
     return result
 
 @router.get("/count")

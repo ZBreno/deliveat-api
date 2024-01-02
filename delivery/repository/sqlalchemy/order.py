@@ -72,7 +72,7 @@ class OrderRepository:
             self.sess.query(Order)
             .options(
                 joinedload(Order.products)
-                .joinedload(AssociationProductOrder.product)
+                .joinedload(AssociationProductOrder.product)    
                 .joinedload(Product.categories)
                 .joinedload(AssociationProductCategory.category),
                 joinedload(Order.products)
@@ -84,12 +84,12 @@ class OrderRepository:
         )
 
         if status:
-            query = query.filter(Order.status == status)
+            orders_query = orders_query.filter(Order.status == status)
 
         if code:
-            query = query.filter(Order.code == code)
+            orders_query = orders_query.filter(Order.code == code)
 
-        result = query.all()
+        result = orders_query.all()
 
         return result
 
@@ -184,4 +184,4 @@ class OrderRepository:
         yesterday = today - timedelta(days=1)
 
     def get_my_orders(self, user_id):
-        return self.sess.query(Product).filter(Product.user_id == user_id).all()
+        return self.sess.query(Order).filter(Order.user_id == user_id).all()

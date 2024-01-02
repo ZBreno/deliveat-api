@@ -51,6 +51,7 @@ def add_product(
         "categories": categories,
         "products_bonus": products_bonus,
         "user_id": user.id,
+        "image" : file_location
     }
 
     result = repo.insert_product(product_data)
@@ -90,7 +91,31 @@ def delete_product(id: UUID, sess: Session = Depends(sess_db)):
 def list_product(sess: Session = Depends(sess_db), category: str | None = None):
     repo: ProductRepository = ProductRepository(sess)
     result = repo.get_all_product(category=category)
-    return result
+
+    data = []
+    for product in result:
+        product_bonuses = []
+        for pb in product.products_bonus:
+            product_bonuses.append({
+                "name" : pb.product_bonus.name
+            })
+
+        categories = []
+        for category in product.categories:
+            categories.append({
+                "name" : category.category.name
+            })
+
+        data.append({
+            "name" : product.name,
+            "description" : product.description,
+            "cost" : product.cost,
+            "image" : product.image,
+            "product_bonus" : product_bonuses,
+            "categories" : categories
+        })
+
+    return data
 
 
 @router.get("/list/products_store/")

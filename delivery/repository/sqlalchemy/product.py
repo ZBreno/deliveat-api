@@ -17,7 +17,8 @@ class ProductRepository:
                 name=product["name"],
                 description=product["description"],
                 cost=product["cost"],
-                user_id=product["user_id"]
+                user_id=product["user_id"],
+                image=product["image"]
             )
 
             if "categories" in product:
