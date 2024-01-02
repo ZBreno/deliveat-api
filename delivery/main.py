@@ -8,10 +8,10 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permitir qualquer origem
+    allow_origins=["*"],  
     allow_credentials=True,
-    allow_methods=["*"],  # Permitir qualquer método HTTP
-    allow_headers=["*"],  # Permitir qualquer cabeçalho
+    allow_methods=["*"], 
+    allow_headers=["*"], 
 )
 
 app.include_router(ticket.router,dependencies=[Depends(get_current_user)])

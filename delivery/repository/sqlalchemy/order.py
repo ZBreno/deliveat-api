@@ -1,9 +1,10 @@
 from typing import Dict, Any, List, Union
 from sqlalchemy.orm import Session, joinedload, load_only
-from domain.data.sqlalchemy_models import Order, Product, AssociationProductOrder, AssociationProductCategory, AssociationProductBonus, Category
+from domain.data.sqlalchemy_models import Order, Product, AssociationProductOrder, Address
 from uuid import UUID, uuid4
 from domain.response.order import OrderResponse
 from datetime import datetime, timedelta
+from sqlalchemy.orm import aliased
 from sqlalchemy import func, select
 import locale
 
@@ -66,31 +67,23 @@ class OrderRepository:
             return False
         return True
 
-    def get_all_order(self, status: str | None, code: str | None, user_id: UUID) -> List[Order]:
-        orders_query = (
-            self.sess.query(Order)
-            .options(
-                joinedload(Order.products)
-                .joinedload(AssociationProductOrder.product)
-                .joinedload(Product.categories)
-                .joinedload(AssociationProductCategory.category), 
-                joinedload(Order.products)
-                .joinedload(AssociationProductOrder.product)
-                .joinedload(Product.products_bonus).
-                joinedload(AssociationProductBonus.product_bonus)
-            )
-            .filter(Order.store_id == user_id)
+    def get_all_order(self, status: str = None, code: str = None, user_id: UUID = None):
+        address_alias = aliased(Address)
+        query = (
+            self.session.query(Order, address_alias)
+            .join(address_alias, Order.address_id == address_alias.id)
+            .filter(Order.user_id == user_id)
         )
 
         if status:
-            orders_query = orders_query.filter(Order.status == status)
+            query = query.filter(Order.status == status)
 
         if code:
-            orders_query = orders_query.filter(Order.code == code)
+            query = query.filter(Order.code == code)
 
-        orders = orders_query.all()
+        result = query.all()
 
-        return orders
+        return result
 
     def get_order(self, id: UUID) -> Order:
         return self.sess.query(Order).filter(Order.id == id).one_or_none()
