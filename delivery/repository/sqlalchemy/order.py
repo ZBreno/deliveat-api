@@ -73,7 +73,7 @@ class OrderRepository:
                 joinedload(Order.products)
                 .joinedload(AssociationProductOrder.product)
                 .joinedload(Product.categories)
-                .joinedload(AssociationProductCategory.category), 
+                .joinedload(AssociationProductCategory.category),
                 joinedload(Order.products)
                 .joinedload(AssociationProductOrder.product)
                 .joinedload(Product.products_bonus).
@@ -175,9 +175,12 @@ class OrderRepository:
         locale.setlocale(locale.LC_TIME, '')
 
         return result_yesterday + result_today
-    
+
     def get_total_rating(self, user_id):
         locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
         today = datetime.now().date()
         yesterday = today - timedelta(days=1)
+
+    def get_my_orders(self, user_id):
+        return self.sess.query(Product).filter(Product.user_id == user_id).all()

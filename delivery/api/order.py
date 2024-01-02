@@ -5,10 +5,14 @@ from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
 from domain.request.order import OrderReq
 from repository.sqlalchemy.order import OrderRepository
+from repository.sqlalchemy.user import UserRepository
 from uuid import UUID, uuid4
 from utils.generate_code import generate_code
 from domain.data.sqlalchemy_models import User, Address
 from datetime import datetime, timedelta
+from security.secure import get_current_user
+
+
 router = APIRouter(prefix='/order', tags=['Order'])
 
 
@@ -92,6 +96,15 @@ def get_total_last_week(sess: Session = Depends(sess_db)):
     repo: OrderRepository = OrderRepository(sess)
     user = sess.query(User).first()
     result = repo.get_amount_last_week(user.id)
+    return result
+
+@router.get("/list/my_orders")
+def get_my_orders(sess: Session = Depends(sess_db), current_user: str = Depends(get_current_user)):
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
+    
+    repo: OrderRepository = OrderRepository(sess)
+    result = repo.get_my_orders(user.id)
     return result
 
 @router.get("/count")
