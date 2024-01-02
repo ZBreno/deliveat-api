@@ -17,7 +17,6 @@ class ProductRepository:
                 name=product["name"],
                 description=product["description"],
                 cost=product["cost"],
-                image=product["file_location"],
                 user_id=product["user_id"]
             )
 
