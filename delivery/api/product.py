@@ -93,12 +93,10 @@ def list_product(sess: Session = Depends(sess_db), category: str | None = None):
     return result
 
 
-@router.get("/list/products_store/")
-def get_product(sess: Session = Depends(sess_db), current_user: str = Depends(get_current_user)):
-    repo: UserRepository = UserRepository(sess)
-    user = repo.get_user_me(current_user)
+@router.get("/list/products_store/{id}")
+def get_product(id: UUID, sess: Session = Depends(sess_db)):
     repo: ProductRepository = ProductRepository(sess)
-    result = repo.get_my_products(user.id)
+    result = repo.get_my_products(id)
     return result
 
 
