@@ -16,7 +16,9 @@ class ProductRepository:
                 id=product["id"],
                 name=product["name"],
                 description=product["description"],
-                cost=product["cost"]
+                cost=product["cost"],
+                image=product["file_location"],
+                user_id=product["user_id"]
             )
 
             if "categories" in product:
@@ -85,7 +87,7 @@ class ProductRepository:
                 .load_only(Category.name)
             )
         )
-        
+
         if category:
             products_query = products_query.filter(Category.name == category)
 
@@ -99,3 +101,15 @@ class ProductRepository:
         ).filter(Product.id == id).one_or_none()
 
         return product
+
+    def get_my_products(self, store_id: UUID) -> List[Product]:
+        products_query = (
+            self.sess.query(Product)
+            .options(
+                joinedload(Product.categories)
+                .joinedload(AssociationProductCategory.category)
+                .load_only(Category.name)
+            ).filter(Product.user_id == store_id)
+        )
+
+        return products_query.all()

@@ -6,6 +6,8 @@ from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
 from domain.request.product import ProductReq
 from repository.sqlalchemy.product import ProductRepository
+from repository.sqlalchemy.user import UserRepository
+from security.secure import get_current_user
 from uuid import UUID, uuid4
 from typing import List
 
@@ -27,11 +29,14 @@ def add_product(
     cost: float = Form(...),
     image: UploadFile = File(...),
     categories: List[str] = Form(...),
-    products_bonus: List[str] = Form(default=[]),  
-    sess: Session = Depends(sess_db)
+    products_bonus: List[str] = Form(default=[]),
+    sess: Session = Depends(sess_db),
+    current_user: str = Depends(get_current_user)
 ):
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
     repo: ProductRepository = ProductRepository(sess)
-    
+
     file_location = f"static/uploads/{image.filename}"
     os.makedirs(os.path.dirname(file_location), exist_ok=True)
     with open(file_location, "wb") as file_object:
@@ -44,7 +49,8 @@ def add_product(
         "cost": cost,
         "image": file_location,
         "categories": categories,
-        "products_bonus": products_bonus
+        "products_bonus": products_bonus,
+        "user_id": user.id,
     }
 
     result = repo.insert_product(product_data)
@@ -84,6 +90,15 @@ def delete_product(id: UUID, sess: Session = Depends(sess_db)):
 def list_product(sess: Session = Depends(sess_db), category: str | None = None):
     repo: ProductRepository = ProductRepository(sess)
     result = repo.get_all_product(category=category)
+    return result
+
+
+@router.get("/list/products_store/")
+def get_product(sess: Session = Depends(sess_db), current_user: str = Depends(get_current_user)):
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
+    repo: ProductRepository = ProductRepository(sess)
+    result = repo.get_my_products(user.id)
     return result
 
 

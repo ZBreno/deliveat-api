@@ -96,7 +96,7 @@ def get_user(id: UUID, sess: Session = Depends(sess_db)):
 def read_current_user(current_user: str = Depends(get_current_user), sess: Session = Depends(sess_db)):
     repo: UserRepository = UserRepository(sess)
     user = repo.get_user_me(current_user)
-
+    
     if user:
         return user
     else:
@@ -107,4 +107,10 @@ def read_current_user(current_user: str = Depends(get_current_user), sess: Sessi
 def get_users_store(sess: Session = Depends(sess_db)):
     repo: UserRepository = UserRepository(sess)
     result = repo.get_stories()
+    return result
+
+@router.get('/establishment')
+def get_users_store(sess: Session = Depends(sess_db)):
+    repo: UserRepository = UserRepository(sess)
+    result = repo.get_establishment()
     return result

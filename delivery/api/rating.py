@@ -6,6 +6,7 @@ from db_config.sqlalchemy_connect import SessionFactory
 from domain.request.rating import RatingReq
 from repository.sqlalchemy.rating import RatingRepository
 from uuid import UUID, uuid4
+from datetime import datetime
 
 router = APIRouter(prefix='/rating', tags=['Rating'])
 
