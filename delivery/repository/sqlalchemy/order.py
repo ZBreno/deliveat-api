@@ -1,6 +1,6 @@
 from typing import Dict, Any, List, Union
 from sqlalchemy.orm import Session, joinedload, load_only
-from domain.data.sqlalchemy_models import Order, Product, AssociationProductOrder, Address
+from domain.data.sqlalchemy_models import Order, Product, AssociationProductOrder, Address, AssociationProductBonus, AssociationProductCategory
 from uuid import UUID, uuid4
 from domain.response.order import OrderResponse
 from datetime import datetime, timedelta
