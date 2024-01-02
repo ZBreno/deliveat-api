@@ -63,6 +63,10 @@ class Product(Base):
     products_bonus = relationship(
         "AssociationProductBonus", back_populates="product", cascade="all, delete")
 
+    user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
+
+    user_products = relationship("User", back_populates="products")
+    
     def __str__(self):
         return self.name
 
@@ -150,6 +154,7 @@ class User(Base):
     # is_activate: Mapped[bool]
     isworking = relationship("Operation", back_populates='user_workings')
     addresses = relationship("Address", back_populates='user_addresses')
+    products = relationship("Product",back_populates="user_products")
 
     def __str__(self):
         return self.name

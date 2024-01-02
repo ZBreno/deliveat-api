@@ -67,12 +67,20 @@ class OrderRepository:
             return False
         return True
 
-    def get_all_order(self, status: str = None, code: str = None, user_id: UUID = None):
-        address_alias = aliased(Address)
-        query = (
-            self.session.query(Order, address_alias)
-            .join(address_alias, Order.address_id == address_alias.id)
-            .filter(Order.user_id == user_id)
+    def get_all_order(self, status: str | None, code: str | None, user_id: UUID) -> List[Order]:
+        orders_query = (
+            self.sess.query(Order)
+            .options(
+                joinedload(Order.products)
+                .joinedload(AssociationProductOrder.product)
+                .joinedload(Product.categories)
+                .joinedload(AssociationProductCategory.category),
+                joinedload(Order.products)
+                .joinedload(AssociationProductOrder.product)
+                .joinedload(Product.products_bonus).
+                joinedload(AssociationProductBonus.product_bonus)
+            )
+            .filter(Order.store_id == user_id)
         )
 
         if status:
@@ -168,9 +176,12 @@ class OrderRepository:
         locale.setlocale(locale.LC_TIME, '')
 
         return result_yesterday + result_today
-    
+
     def get_total_rating(self, user_id):
         locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
         today = datetime.now().date()
         yesterday = today - timedelta(days=1)
+
+    def get_my_orders(self, user_id):
+        return self.sess.query(Product).filter(Product.user_id == user_id).all()

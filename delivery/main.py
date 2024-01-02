@@ -14,14 +14,14 @@ app.add_middleware(
     allow_headers=["*"], 
 )
 
-app.include_router(ticket.router,dependencies=[Depends(get_current_user)])
-app.include_router(rating.router,dependencies=[Depends(get_current_user)])
-app.include_router(address.router,dependencies=[Depends(get_current_user)])
-app.include_router(category.router,dependencies=[Depends(get_current_user)])
-app.include_router(order.router,dependencies=[Depends(get_current_user)])
-app.include_router(product.router,dependencies=[Depends(get_current_user)])
-app.include_router(user.router,dependencies=[Depends(get_current_user)])
-app.include_router(product_bonus.router,dependencies=[Depends(get_current_user)])
+app.include_router(ticket.router)
+app.include_router(rating.router)
+app.include_router(address.router)
+app.include_router(category.router)
+app.include_router(order.router)
+app.include_router(product.router)
+app.include_router(user.router)
+app.include_router(product_bonus.router)
 app.include_router(login.router)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
