@@ -72,7 +72,7 @@ class OrderRepository:
             self.sess.query(Order)
             .options(
                 joinedload(Order.products)
-                .joinedload(AssociationProductOrder.product)    
+                .joinedload(AssociationProductOrder.product)
                 .joinedload(Product.categories)
                 .joinedload(AssociationProductCategory.category),
                 joinedload(Order.products)

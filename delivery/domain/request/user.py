@@ -13,6 +13,8 @@ class UserReq(BaseModel):
     password: str
     instagram: Optional[str] = None
     profile_picture: Optional[str] = None
+    delivery_cost: Optional[float] = None
+    time_prepare: Optional[str] = None
     role: RoleChoice
     class Config:
         from_attributes = True
@@ -27,6 +29,8 @@ class UpdateUserReq(BaseModel):
     instagram: Optional[str] = Form(None),
     role: Optional[str] = Form(None),
     profile_picture: UploadFile = File(None)
+    delivery_cost: Optional[float] = Form(None)
+    time_prepare: Optional[str] = Form(None)
 
     class Config:
         from_attributes = True

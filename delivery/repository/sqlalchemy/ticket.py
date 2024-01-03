@@ -39,8 +39,8 @@ class TicketRepository:
     def get_all_ticket(self) -> List[Ticket]:
         return self.sess.query(Ticket).all()
 
-    def get_ticket(self, id: UUID) -> Ticket:
-        return self.sess.query(Ticket).filter(Ticket.id == id).one_or_none()
+    def get_ticket(self, code: UUID) -> Ticket:
+        return self.sess.query(Ticket).filter(Ticket.code == code).one_or_none()
 
     def get_last_tickets(self):
         return self.sess.query(Ticket).order_by(desc(Ticket.created_at)).limit(2).all()

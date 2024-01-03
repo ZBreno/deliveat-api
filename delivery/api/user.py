@@ -33,6 +33,8 @@ def update_user(
     password: Optional[str] = Form(None),
     instagram: Optional[str] = Form(None),
     role: Optional[str] = Form(None),
+    delivery_cost: Optional[float] = Form(None),
+    time_prepare: Optional[str] = Form(None),
     profile_picture: UploadFile = File(None),
     sess: Session = Depends(sess_db)
 ):
@@ -55,7 +57,10 @@ def update_user(
         "password": password or existing_user.password,
         "instagram": instagram or existing_user.instagram,
         "role": role or existing_user.role,
-        "profile_picture": existing_user.profile_picture
+        "profile_picture": existing_user.profile_picture,
+        "delivery_cost": delivery_cost or existing_user.delivery_cost,
+        "time_prepare": time_prepare or existing_user.time_prepare,
+
     }
 
     result = repo.update_user(id, user_data)
@@ -96,9 +101,31 @@ def get_user(id: UUID, sess: Session = Depends(sess_db)):
 def read_current_user(current_user: str = Depends(get_current_user), sess: Session = Depends(sess_db)):
     repo: UserRepository = UserRepository(sess)
     user = repo.get_user_me(current_user)
-    
+
     if user:
-        return user
+        # Use the get_addresses method to retrieve user addresses
+        addresses = [address for address in user.addresses]
+        isworkings = [work for work in user.isworking]
+
+        # Include addresses in the response
+        user_data = {
+            "id": str(user.id),
+            "name": user.name,
+            "delivery_cost": user.delivery_cost,
+            "time_prepare": user.time_prepare,
+            "birthdate": user.birthdate,
+            "document": user.document,
+            "phone": user.phone,
+            "email": user.email,
+            "password": user.password,
+            "instagram": user.instagram,
+            "profile_picture": user.profile_picture,
+            "role": user.role,
+            "addresses": addresses,
+            "isworking": isworkings 
+        }
+
+        return user_data
     else:
         return JSONResponse(content={'message': 'User not found'}, status_code=status.HTTP_404_NOT_FOUND)
 
@@ -108,6 +135,7 @@ def get_users_store(sess: Session = Depends(sess_db)):
     repo: UserRepository = UserRepository(sess)
     result = repo.get_stories()
     return result
+
 
 @router.get('/establishment')
 def get_users_store(sess: Session = Depends(sess_db)):

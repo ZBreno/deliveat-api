@@ -55,6 +55,7 @@ class Product(Base):
     description: Mapped[Optional[str]]
     cost: Mapped[float]
     image: Mapped[Optional[str]]
+    quantity: Mapped[Optional[int]]
 
     categories = relationship(
         "AssociationProductCategory", back_populates="product", cascade="all, delete", passive_deletes=True)
@@ -66,7 +67,7 @@ class Product(Base):
     user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
 
     user_products = relationship("User", back_populates="products")
-    
+
     def __str__(self):
         return self.name
 
@@ -79,6 +80,7 @@ class ProductBonus(Base):
     description: Mapped[Optional[str]]
     cost: Mapped[float]
     image: Mapped[Optional[str]]
+    quantity: Mapped[Optional[int]]
 
     products = relationship("AssociationProductBonus",
                             back_populates="product_bonus", cascade="all, delete")
@@ -129,7 +131,7 @@ class Ticket(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime)
     code: Mapped[str]
     description: Mapped[Optional[str]]
-    type: Mapped[str]
+    discount: Mapped[float]
 
     def __str__(self):
         return self.code
@@ -140,6 +142,8 @@ class User(Base):
 
     id: Mapped[UUID] = mapped_column(UUID, primary_key=True)
     name: Mapped[str]
+    delivery_cost: Mapped[Optional[float]]
+    time_prepare: Mapped[Optional[str]]
     birthdate: Mapped[Optional[datetime]]
     document: Mapped[Optional[str]]
     phone: Mapped[Optional[str]]
@@ -154,7 +158,7 @@ class User(Base):
     # is_activate: Mapped[bool]
     isworking = relationship("Operation", back_populates='user_workings')
     addresses = relationship("Address", back_populates='user_addresses')
-    products = relationship("Product",back_populates="user_products")
+    products = relationship("Product", back_populates="user_products")
 
     def __str__(self):
         return self.name

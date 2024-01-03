@@ -3,10 +3,12 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
-from domain.request.address import AddressReq 
+from domain.request.address import AddressReq
 from repository.sqlalchemy.address import AddressRepository
 from domain.data.sqlalchemy_models import User
 from uuid import UUID, uuid4
+from repository.sqlalchemy.user import UserRepository
+from security.secure import get_current_user
 
 router = APIRouter(prefix='/address', tags=['Address'])
 
@@ -20,15 +22,16 @@ def sess_db():
 
 
 @router.post("/add")
-def add_address(req: AddressReq, sess: Session = Depends(sess_db)):
-    user = sess.query(User).order_by(User.id.desc()).first()
+def add_address(req: AddressReq, sess: Session = Depends(sess_db), current_user: str = Depends(get_current_user)):
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
     repo: AddressRepository = AddressRepository(sess)
     address = req.model_dump()
     address['id'] = uuid4()
     address['user_id'] = user.id
-    
+
     result = repo.insert_address(address)
-    
+
     if result:
         return JSONResponse(content=jsonable_encoder(address), status_code=status.HTTP_201_CREATED)
     else:
@@ -37,12 +40,12 @@ def add_address(req: AddressReq, sess: Session = Depends(sess_db)):
 
 @router.patch("/update/{id}")
 def update_address(id: UUID, req: AddressReq, sess: Session = Depends(sess_db)):
-    
+
     address = req.model_dump(exclude_unset=True)
     repo: AddressRepository = AddressRepository(sess)
-    
+
     result = repo.update_address(id, address)
-    
+
     if result:
         return JSONResponse(content=jsonable_encoder(address), status_code=status.HTTP_200_OK)
     else:
@@ -53,7 +56,7 @@ def update_address(id: UUID, req: AddressReq, sess: Session = Depends(sess_db)):
 def delete_address(id: UUID, sess: Session = Depends(sess_db)):
     repo: AddressRepository = AddressRepository(sess)
     result = repo.delete_address(id)
-    
+
     if result:
         return JSONResponse(content={'message': 'address deleted successfully'}, status_code=status.HTTP_204_NO_CONTENT)
     else:
@@ -61,9 +64,11 @@ def delete_address(id: UUID, sess: Session = Depends(sess_db)):
 
 
 @router.get("/list")
-def list_address(sess: Session = Depends(sess_db)):
+def list_address(sess: Session = Depends(sess_db), current_user: str = Depends(get_current_user)):
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
     repo: AddressRepository = AddressRepository(sess)
-    result = repo.get_all_address()
+    result = repo.get_all_address(user.id)
     return result
 
 

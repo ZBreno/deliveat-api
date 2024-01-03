@@ -25,16 +25,14 @@ def sess_db():
 
 
 @router.post("/add")
-def add_order(req: OrderReq, sess: Session = Depends(sess_db)):
+def add_order(req: OrderReq, sess: Session = Depends(sess_db), current_user: str = Depends(get_current_user)):
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
     repo: OrderRepository = OrderRepository(sess)
-    user = sess.query(User).first()
-    address = sess.query(Address).first()
     order = req.model_dump()
     order['id'] = uuid4()
     order['code'] = generate_code()
     order['user_id'] = user.id
-    order['store_id'] = user.id
-    order['address_id'] = address.id
     order['created_at'] = datetime.now()
     result = repo.insert_order(order)
 
@@ -64,8 +62,9 @@ def update_order(id: UUID, req: OrderReq, sess: Session = Depends(sess_db)):
                 data = response.json()
                 print(data)
             else:
-                print(f"Falha na requisição. Código de status: {response.status_code}")
-        
+                print(
+                    f"Falha na requisição. Código de status: {response.status_code}")
+
     result = repo.update_order(id, order)
 
     if result:
@@ -86,8 +85,9 @@ def delete_order(id: UUID, sess: Session = Depends(sess_db)):
 
 
 @router.get("/list")
-def list_order(sess: Session = Depends(sess_db), status: str | None = None, code: str | None = None):
-    user = sess.query(User).first()
+def list_order(sess: Session = Depends(sess_db), status: str | None = None, code: str | None = None, current_user: str = Depends(get_current_user)):
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
     repo: OrderRepository = OrderRepository(sess=sess)
     orders = repo.get_all_order(status=status, code=code, user_id=user.id)
 
@@ -135,17 +135,19 @@ def list_order(sess: Session = Depends(sess_db), status: str | None = None, code
 
 
 @router.get("/amount")
-def get_total_yesterday_and_today(sess: Session = Depends(sess_db)):
+def get_total_yesterday_and_today(sess: Session = Depends(sess_db), current_user: str = Depends(get_current_user)):
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
     repo: OrderRepository = OrderRepository(sess)
-    user = sess.query(User).first()
     result = repo.get_amount(user.id)
     return result
 
 
 @router.get("/last_week")
-def get_total_last_week(sess: Session = Depends(sess_db)):
+def get_total_last_week(sess: Session = Depends(sess_db), current_user: str = Depends(get_current_user)):
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
     repo: OrderRepository = OrderRepository(sess)
-    user = sess.query(User).first()
     result = repo.get_amount_last_week(user.id)
     return result
 
@@ -160,8 +162,9 @@ def get_total_last_week(sess: Session = Depends(sess_db), current_user: str = De
 
 
 @router.get("/count")
-def get_total_last_week(sess: Session = Depends(sess_db)):
+def get_total_last_week(sess: Session = Depends(sess_db), current_user: str = Depends(get_current_user)):
+    repo: UserRepository = UserRepository(sess)
+    user = repo.get_user_me(current_user)
     repo: OrderRepository = OrderRepository(sess)
-    user = sess.query(User).first()
     result = repo.get_count_orders(user.id)
     return result

@@ -120,7 +120,7 @@ def list_product(sess: Session = Depends(sess_db), category: str | None = None):
 
 
 @router.get("/list/products_store/{id}")
-def get_product(id: UUID, sess: Session = Depends(sess_db)):
+def get_products_store(id: UUID, sess: Session = Depends(sess_db)):
     repo: ProductRepository = ProductRepository(sess)
     result = repo.get_my_products(id)
     return result

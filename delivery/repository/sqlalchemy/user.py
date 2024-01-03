@@ -1,6 +1,6 @@
 from typing import Dict, Any, List
 from sqlalchemy.orm import Session
-from domain.data.sqlalchemy_models import User
+from domain.data.sqlalchemy_models import User, Address
 from uuid import UUID
 from domain.data.enums.role import RoleChoice
 
@@ -48,7 +48,10 @@ class UserRepository:
 
     def get_stories(self) -> List[User]:
         return self.sess.query(User).filter(User.role == RoleChoice.STORE).all()
-
+    
+    def get_addresses(self) -> List[Address]:
+        return [address.address for address in self.addresses]
+    
     def get_establishment(self):
         results = self.sess.query(User.name, User.profile_picture, User.id).filter(
             User.role == RoleChoice.STORE).all()

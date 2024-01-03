@@ -65,10 +65,10 @@ def list_ticket(sess: Session = Depends(sess_db)):
     return result
 
 
-@router.get("/get/{id}")
-def get_ticket(id: UUID, sess: Session = Depends(sess_db)):
+@router.get("/get/{code}")
+def get_ticket(code: str, sess: Session = Depends(sess_db)):
     repo: TicketRepository = TicketRepository(sess)
-    result = repo.get_ticket(id)
+    result = repo.get_ticket(code)
     return result
 
 @router.get("/last_tickets")

@@ -37,8 +37,8 @@ class AddressRepository:
             return False
         return True
 
-    def get_all_address(self) -> List[Address]:
-        return self.sess.query(Address).all()
+    def get_all_address(user_id: str, self) -> List[Address]:
+        return self.sess.query(Address).filter(Address.id == user_id).all()
 
     def get_address(self, id: UUID) -> Address:
         return self.sess.query(Address).filter(Address.id == id).one_or_none()

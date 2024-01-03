@@ -7,7 +7,7 @@ class TicketReq(BaseModel):
     deadline: date
     code: str
     description: Optional[str] = None
-    type: str
+    discount: float
     title: str
     
     class Config:
