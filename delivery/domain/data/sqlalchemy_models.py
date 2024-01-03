@@ -20,8 +20,10 @@ class AssociationProductCategory(Base):
     product_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('product.id'))
     category_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('category.id'))
 
-    category = relationship("Category", back_populates='products', cascade="all, delete")
-    product = relationship("Product", back_populates='categories', cascade="all, delete")
+    category = relationship(
+        "Category", back_populates='products', cascade="all, delete")
+    product = relationship(
+        "Product", back_populates='categories', cascade="all, delete")
 
 
 class AssociationProductOrder(Base):
@@ -211,7 +213,7 @@ class Order(Base):
     store_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
 
     products = relationship("AssociationProductOrder",
-                            back_populates="order", cascade="all, delete")
+                            back_populates="order", cascade="all, delete", passive_deletes=True)
 
     def __str__(self):
         return f"{self.user_id} / {self.total}"
