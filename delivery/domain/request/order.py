@@ -14,3 +14,15 @@ class OrderReq(BaseModel):
     
     class Config:
         from_attributes = True
+
+class OrderReq(BaseModel):
+    total: Optional[float] = None
+    observation: Optional[str] = None
+    address_id: Optional[UUID] = None
+    store_id: Optional[UUID] = None
+    status: Optional[StatusChoices] = None
+    products: Optional[List[UUID]] = None
+    payment_method: Optional[str] = None
+    
+    class Config:
+        from_attributes = True

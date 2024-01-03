@@ -1,8 +1,10 @@
 from fastapi import FastAPI, Depends
 from api import user, ticket, address, category, order, product, rating, product_bonus, login
-from security.secure import get_current_user
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 app = FastAPI()
 
@@ -13,6 +15,20 @@ app.add_middleware(
     allow_methods=["*"], 
     allow_headers=["*"], 
 )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    return JSONResponse(
+        content={"detail": exc.errors(), "body": exc.body},
+        status_code=422,
+    )
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request, exc):
+    return JSONResponse(
+        content={"detail": exc.detail},
+        status_code=exc.status_code,
+    )
 
 app.include_router(ticket.router)
 app.include_router(rating.router)

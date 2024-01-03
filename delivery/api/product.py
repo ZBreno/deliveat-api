@@ -22,7 +22,7 @@ def sess_db():
         db.close()
 
 
-@router.post("/add")
+@router.post("/add/")
 def add_product(
     name: str = Form(...),
     description: str = Form(...),
@@ -107,6 +107,7 @@ def list_product(sess: Session = Depends(sess_db), category: str | None = None):
             })
 
         data.append({
+            "id" : product.id,
             "name" : product.name,
             "description" : product.description,
             "cost" : product.cost,

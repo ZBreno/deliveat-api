@@ -20,8 +20,8 @@ class AssociationProductCategory(Base):
     product_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('product.id'))
     category_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('category.id'))
 
-    category = relationship("Category", back_populates='products')
-    product = relationship("Product", back_populates='categories')
+    category = relationship("Category", back_populates='products', cascade="all, delete")
+    product = relationship("Product", back_populates='categories', cascade="all, delete")
 
 
 class AssociationProductOrder(Base):
@@ -57,11 +57,11 @@ class Product(Base):
     image: Mapped[Optional[str]]
 
     categories = relationship(
-        "AssociationProductCategory", back_populates="product", cascade="all, delete")
+        "AssociationProductCategory", back_populates="product", cascade="all, delete", passive_deletes=True)
     orders = relationship("AssociationProductOrder",
-                          back_populates="product", cascade="all, delete")
+                          back_populates="product", cascade="all, delete", passive_deletes=True)
     products_bonus = relationship(
-        "AssociationProductBonus", back_populates="product", cascade="all, delete")
+        "AssociationProductBonus", back_populates="product", cascade="all, delete", passive_deletes=True)
 
     user_id: Mapped[UUID] = mapped_column(UUID, ForeignKey('user.id'))
 

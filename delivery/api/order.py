@@ -3,11 +3,12 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
+import requests
 from domain.request.order import OrderReq
 from repository.sqlalchemy.order import OrderRepository
 from uuid import UUID, uuid4
 from utils.generate_code import generate_code
-from domain.data.sqlalchemy_models import User, Address
+from domain.data.sqlalchemy_models import User, Address, Order
 from datetime import datetime, timedelta
 router = APIRouter(prefix='/order', tags=['Order'])
 
@@ -42,10 +43,26 @@ def add_order(req: OrderReq, sess: Session = Depends(sess_db)):
 
 @router.patch("/update/{id}")
 def update_order(id: UUID, req: OrderReq, sess: Session = Depends(sess_db)):
-
     order = req.model_dump(exclude_unset=True)
     repo: OrderRepository = OrderRepository(sess)
 
+    if 'status' in order:
+        old = sess.query(Order).filter(Order.id == id).one_or_none()
+        user = sess.query(User).filter(User.id == old.user_id).one_or_none()
+        if old.status != order['status'] and user.phone:
+            data = {
+                "text": f"Seu pedido saiu de {old.status.name} para {order['status'].name}",
+                "phone": user.phone
+            }
+            url = "http://127.0.0.1:8002/notification/add"
+            response = requests.post(url, json=data)
+
+            if response.status_code == 200:
+                data = response.json()
+                print(data)
+            else:
+                print(f"Falha na requisição. Código de status: {response.status_code}")
+        
     result = repo.update_order(id, order)
 
     if result:

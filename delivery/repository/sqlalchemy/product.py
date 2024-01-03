@@ -70,8 +70,10 @@ class ProductRepository:
 
     def delete_product(self, id: UUID) -> bool:
         try:
-            product = self.sess.query(Product).filter(
-                Product.id == id).delete()
+            product = self.sess.query(Product).filter(Product.id == id).one_or_none()
+            associantionsCategory = self.sess.query(AssociationProductCategory).filter(AssociationProductCategory.product_id==product.id).delete()
+            associantionsBonus = self.sess.query(AssociationProductBonus).filter(AssociationProductBonus.product_id==product.id).delete()
+            product = self.sess.query(Product).filter(Product.id == id).delete()
             self.sess.commit()
 
         except:

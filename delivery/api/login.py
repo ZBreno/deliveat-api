@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+import requests
 from sqlalchemy.orm import Session
 from db_config.sqlalchemy_connect import SessionFactory
 from fastapi.security import OAuth2PasswordBearer
@@ -58,6 +59,18 @@ def add_user(req: UserReq, sess: Session = Depends(sess_db)):
     user['id'] = uuid4()
     
     result = repo.insert_user(user)
+
+    data = {
+        "email": user['email']
+    }
+    url = "http://127.0.0.1:8002/notification/email"
+    response = requests.post(url, json=data)
+
+    if response.status_code == 200:
+        data = response.json()
+        print(data)
+    else:
+        print(f"Falha na requisição. Código de status: {response.status_code}")
     
     if result:
         return JSONResponse(content=jsonable_encoder(user), status_code=status.HTTP_201_CREATED)
