@@ -1,9 +1,10 @@
-from domain.data.sqlalchemy_models import Address, User, Ticket, Category, Product
+from domain.data.sqlalchemy_models import Address, User, Ticket, Category, Product, ProductBonus, Operation
 
 from .test_common import Session
 import factory
 from uuid import uuid4
 from domain.data.enums.role import RoleChoice
+from domain.data.enums.week import DayOfWeek
 from datetime import datetime
 
 
@@ -37,7 +38,7 @@ class AddressFactory(factory.alchemy.SQLAlchemyModelFactory):
     complement = factory.Faker('secondary_address')
     reference_point = factory.Faker('sentence')
     user_id = factory.LazyAttribute(lambda _: UserFactory().id)
-    
+
 
 class TicketFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
@@ -73,5 +74,29 @@ class ProductFactory(factory.alchemy.SQLAlchemyModelFactory):
     cost = factory.Faker('random_number', digits=2)
     quantity = factory.Faker('random_number', digits=2)
     user_id = factory.LazyAttribute(lambda _: UserFactory().id)
-    
 
+
+class ProductBonusFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = ProductBonus
+        sqlalchemy_session = Session
+
+    id = factory.Sequence(lambda n: str(uuid4()))
+    name = factory.Faker('name')
+    description = factory.Faker('sentence')
+    cost = factory.Faker('random_number', digits=2)
+    quantity = factory.Faker('random_number', digits=2)
+
+
+class OperationFactory(factory.alchemy.SQLAlchemyModelFactory):
+    class Meta:
+        model = Operation
+        sqlalchemy_session = Session
+
+    id = factory.Sequence(lambda n: str(uuid4()))
+    timeout = datetime.now().time()
+    timein = datetime.now().time()
+    day = factory.Faker('random_element', elements=[
+        DayOfWeek.FRIDAY, DayOfWeek.MONDAY, DayOfWeek.SATURDAY, DayOfWeek.THURSDAY])
+    user_id = factory.LazyAttribute(lambda _: UserFactory().id)
+    

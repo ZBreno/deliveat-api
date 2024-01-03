@@ -179,6 +179,9 @@ class Operation(Base):
 
     user_workings = relationship("User", back_populates="isworking")
 
+    def __str__(self):
+        return self.id
+
 
 class Rating(Base):
     __tablename__ = 'rating'
