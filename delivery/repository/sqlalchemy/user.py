@@ -50,10 +50,10 @@ class UserRepository:
         return self.sess.query(User).filter(User.role == RoleChoice.STORE).all()
 
     def get_establishment(self):
-        results = self.sess.query(User.name, User.profile_picture).filter(
+        results = self.sess.query(User.name, User.profile_picture, User.id).filter(
             User.role == RoleChoice.STORE).all()
 
-        establishment_data = [{"name": name, "profile_picture": profile_picture}
-                              for name, profile_picture in results]
+        establishment_data = [{"name": name, "profile_picture": profile_picture, "id": id}
+                              for name, profile_picture, id in results]
 
         return establishment_data
