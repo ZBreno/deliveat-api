@@ -1,6 +1,6 @@
 from typing import Dict, Any, List, Union
 from sqlalchemy.orm import Session, joinedload, load_only
-from domain.data.sqlalchemy_models import Order, Product, AssociationProductOrder, Address
+from domain.data.sqlalchemy_models import Order, Product, Rating, AssociationProductOrder, AssociationProductBonus, AssociationProductCategory, Address
 from uuid import UUID, uuid4
 from domain.response.order import OrderResponse
 from datetime import datetime, timedelta
@@ -62,7 +62,10 @@ class OrderRepository:
     def delete_order(self, id: UUID) -> bool:
         try:
             order = self.sess.query(Order).filter(Order.id == id).one_or_none()
-            associantionsProduct = self.sess.query(AssociationProductOrder).filter(AssociationProductOrder.order_id==order.id).delete()
+            rating = self.sess.query(Rating).filter(
+                Rating.order_id == order.id).delete()
+            associantionsProduct = self.sess.query(AssociationProductOrder).filter(
+                AssociationProductOrder.order_id == order.id).delete()
             order = self.sess.query(Order).filter(Order.id == id).delete()
             self.sess.commit()
         except:

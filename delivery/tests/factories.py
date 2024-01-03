@@ -3,13 +3,15 @@ from domain.data.sqlalchemy_models import Address, User, Ticket, Category, Produ
 from .test_common import Session
 import factory
 from uuid import uuid4
+from domain.data.enums.role import RoleChoice
+from datetime import datetime
 
 
 class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = User
         sqlalchemy_session = Session
-        
+
     id = factory.Sequence(lambda n: str(uuid4()))
     name = factory.Faker('name')
     birthdate = factory.Faker('date_of_birth')
@@ -18,14 +20,15 @@ class UserFactory(factory.alchemy.SQLAlchemyModelFactory):
     email = factory.Sequence(lambda n: str(uuid4()))
     password = factory.Faker('password')
     instagram = factory.Sequence(lambda n: str(uuid4()))
-    role = factory.Faker('random_element', elements=['company', 'client'])
-    
+    role = factory.Faker('random_element', elements=[
+                         RoleChoice.STORE, RoleChoice.CLIENT])
+
 
 class AddressFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Address
         sqlalchemy_session = Session
-        
+
     id = factory.Sequence(lambda n: str(uuid4()))
     city = factory.Faker('city')
     street = factory.Faker('street_address')
@@ -33,37 +36,42 @@ class AddressFactory(factory.alchemy.SQLAlchemyModelFactory):
     number = factory.Faker('building_number')
     complement = factory.Faker('secondary_address')
     reference_point = factory.Faker('sentence')
-    user = factory.SubFactory(UserFactory)
-    user_id = factory.SelfAttribute('user.id')
+    user_id = factory.LazyAttribute(lambda _: UserFactory().id)
     
-    
+
 class TicketFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Ticket
         sqlalchemy_session = Session
-        
+
     id = factory.Sequence(lambda n: str(uuid4()))
     deadline = factory.Faker('date_of_birth')
     code = factory.Sequence(lambda n: str(uuid4()))
     description = factory.Faker('sentence')
-    type = factory.Faker('random_element', elements=['company', 'client'])
-    
+    title = factory.Faker('sentence')
+    discount = factory.Faker('random_number', digits=2)
+    created_at = datetime.now()
+
+
 class CategoryFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Category
         sqlalchemy_session = Session
-    
+
     id = factory.Sequence(lambda n: str(uuid4()))
     name = factory.Faker('name')
-    
+
 
 class ProductFactory(factory.alchemy.SQLAlchemyModelFactory):
     class Meta:
         model = Product
         sqlalchemy_session = Session
-        
+
     id = factory.Sequence(lambda n: str(uuid4()))
     name = factory.Faker('name')
     description = factory.Faker('sentence')
     cost = factory.Faker('random_number', digits=2)
+    quantity = factory.Faker('random_number', digits=2)
+    user_id = factory.LazyAttribute(lambda _: UserFactory().id)
     
+
