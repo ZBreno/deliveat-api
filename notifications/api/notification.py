@@ -1,4 +1,5 @@
 import smtplib
+from fastapi import Body
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from fastapi import APIRouter, Depends, status
@@ -23,7 +24,7 @@ def sess_db():
         db.close()
 
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID', 'AC4d8334617c0169fe52f792908aa3e995')
-TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN', '34cda7a2fe4599a56457a414da2c8a72')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN', '4de557c269aefa63aa8eda671f8944c8')
 TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER', 'whatsapp:+14155238886')
 
 EMAIL_SENDER = os.getenv('EMAIL_SENDER', 'ze.neto429@gmail.com')
@@ -38,14 +39,7 @@ def add_notification(req: NotificationReq, sess: Session = Depends(sess_db)):
     result = repo.insert_notification(notification)
 
     if result:
-        # Enviar mensagem via WhatsApp usando Twilio
         send_whatsapp_message(notification['text'], notification['phone'])
-
-        # Enviar e-mail de confirmação com botão
-        confirmation_url = "https://sua_url.com"  # Substitua pela URL real de confirmação
-        body = f"Seu e-mail foi confirmado com sucesso! Clique no botão abaixo para confirmar:\n\n" \
-               f"<a href='{confirmation_url}'><button style='padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;'>Confirmar E-mail</button></a>"
-        send_confirmation_email(notification['email'], body)
 
         return JSONResponse(content=jsonable_encoder(notification), status_code=status.HTTP_201_CREATED)
     else:
@@ -81,7 +75,7 @@ def send_confirmation_email(email: str, body: str):
         print(f"E-mail de confirmação enviado para {email}")
 
 @router.post("/email")
-async def confirm_email(email: str = Query(..., title="Endereço de e-mail para confirmação")):
+async def confirm_email(email: str = Body(..., embed=True)):
     confirmation_url = "https://google.com"
     body = f"Seu e-mail foi confirmado com sucesso! Clique no botão abaixo para confirmar:\n\n" \
            f"<a href='{confirmation_url}'><button style='padding: 10px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px;'>Confirmar E-mail</button></a>"
